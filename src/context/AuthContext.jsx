@@ -1,11 +1,10 @@
 import React, { createContext, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [user, setUser] = useState(null);
 
   const login = (userData) => {
@@ -13,7 +12,6 @@ export function AuthProvider({ children }) {
     // In a real app, you would validate credentials with a backend
     setIsAuthenticated(true);
     setUser({ email: userData.email });
-    setShowLoginModal(false);
   };
 
   const register = (userData) => {
@@ -21,27 +19,11 @@ export function AuthProvider({ children }) {
     // In a real app, you would send this data to a backend
     setIsAuthenticated(true);
     setUser({ email: userData.email });
-    setShowRegisterModal(false);
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
-  };
-
-  const openLoginModal = () => {
-    setShowLoginModal(true);
-    setShowRegisterModal(false);
-  };
-
-  const openRegisterModal = () => {
-    setShowRegisterModal(true);
-    setShowLoginModal(false);
-  };
-
-  const closeModals = () => {
-    setShowLoginModal(false);
-    setShowRegisterModal(false);
   };
 
   return (
@@ -51,12 +33,7 @@ export function AuthProvider({ children }) {
         user,
         login,
         register,
-        logout,
-        showLoginModal,
-        showRegisterModal,
-        openLoginModal,
-        openRegisterModal,
-        closeModals
+        logout
       }}
     >
       {children}
