@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
   const location = useLocation();
-  const { isAuthenticated, user, logout, openLoginModal } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   
   return (
     <nav className="navbar">
@@ -28,9 +28,9 @@ function Navbar() {
               </button>
             </div>
           ) : (
-            <button onClick={openLoginModal} className="nav-button login">
+            <Link to="/login" className="nav-button login">
               Login
-            </button>
+            </Link>
           )}
         </div>
       </div>
