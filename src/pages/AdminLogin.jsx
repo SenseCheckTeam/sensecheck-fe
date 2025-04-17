@@ -30,7 +30,7 @@ function AdminLogin() {
       localStorage.setItem('adminName', response.loginResult.name);
 
       // Redirect to admin dashboard
-      navigate('/admin-dashboard');
+      navigate('/admin');
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
