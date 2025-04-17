@@ -1,31 +1,33 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
-import Home from './components/Home'
-import Login from './components/Login'
-import Register from './components/Register'
-import { AuthProvider } from './context/AuthContext'
 
-function AppContent() {
-  return (
-    <div className="app-container">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/articles" element={<div>Articles Page</div>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </div>
-  );
-}
+// Components
+import Layout from './components/Layout'
+
+// Pages
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import AdminLogin from './pages/AdminLogin'
+import AdminDashboard from './pages/AdminDashboard'
+import Articles from './pages/Articles'
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="articles" element={<Articles />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="admin" element={<AdminLogin />} />
+          <Route path="admin-dashboard" element={<AdminDashboard />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
