@@ -22,8 +22,8 @@ function App() {
           <Route path="articles" element={<Articles />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="admin" element={<AdminLogin />} />
-          <Route path="admin-dashboard" element={<AdminDashboard />} />
+          <Route path="admin" element={<AdminDashboard />} />
+          <Route path="admin/login" element={<AdminLogin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

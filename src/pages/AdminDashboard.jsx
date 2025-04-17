@@ -7,13 +7,13 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('sliders');
   const [isAdmin, setIsAdmin] = useState(false);
-  
+
   // Cek apakah user adalah admin saat komponen dimount
   useEffect(() => {
     const adminToken = localStorage.getItem('adminToken');
     if (!adminToken) {
       // Redirect ke halaman admin login jika tidak ada token admin
-      navigate('/admin');
+      navigate('/admin/login');
       return;
     }
     setIsAdmin(true);
@@ -46,13 +46,13 @@ function AdminDashboard() {
       </div>
 
       <div className="admin-tabs">
-        <button 
+        <button
           className={`tab-btn ${activeTab === 'sliders' ? 'active' : ''}`}
           onClick={() => setActiveTab('sliders')}
         >
           Manage Sliders
         </button>
-        <button 
+        <button
           className={`tab-btn ${activeTab === 'articles' ? 'active' : ''}`}
           onClick={() => setActiveTab('articles')}
         >
@@ -96,11 +96,11 @@ function SliderManager() {
       setLoading(true);
       const response = await fetch('http://13.215.253.107:5000/sliders');
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.message);
       }
-      
+
       setSliders(data.data || []);
       setError(null);
     } catch (err) {
@@ -128,7 +128,7 @@ function SliderManager() {
         ...formData,
         photo: file
       });
-      
+
       // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -153,32 +153,32 @@ function SliderManager() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.description || (!formData.photo && !editingId)) {
       alert('Please fill all fields and upload an image');
       return;
     }
-    
+
     try {
       setLoading(true);
-      
+
       const formDataObj = new FormData();
       formDataObj.append('title', formData.title);
       formDataObj.append('description', formData.description);
       if (formData.photo) {
         formDataObj.append('photo', formData.photo);
       }
-      
+
       const adminToken = localStorage.getItem('adminToken');
-      
+
       let url = 'http://13.215.253.107:5000/admin/sliders';
       let method = 'POST';
-      
+
       if (editingId) {
         url = `http://13.215.253.107:5000/admin/sliders/${editingId}`;
         method = 'PUT';
       }
-      
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -186,13 +186,13 @@ function SliderManager() {
         },
         body: formDataObj
       });
-      
+
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.message);
       }
-      
+
       // Refresh sliders
       fetchSliders();
       resetForm();
@@ -222,25 +222,25 @@ function SliderManager() {
     if (!window.confirm('Are you sure you want to delete this slider?')) {
       return;
     }
-    
+
     try {
       setLoading(true);
-      
+
       const adminToken = localStorage.getItem('adminToken');
-      
+
       const response = await fetch(`http://13.215.253.107:5000/admin/sliders/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${adminToken}`
         }
       });
-      
+
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.message);
       }
-      
+
       // Refresh sliders
       fetchSliders();
       alert('Slider deleted successfully!');
@@ -274,7 +274,7 @@ function SliderManager() {
     <div className="slider-manager">
       <div className="manager-header">
         <h2>Manage Sliders</h2>
-        <button 
+        <button
           className="add-btn"
           onClick={() => setShowForm(!showForm)}
         >
@@ -285,7 +285,7 @@ function SliderManager() {
       {showForm && (
         <form className="admin-form" onSubmit={handleSubmit}>
           <h3>{editingId ? 'Edit Slider' : 'Add New Slider'}</h3>
-          
+
           <div className="form-group">
             <label htmlFor="title">Title</label>
             <input
@@ -297,7 +297,7 @@ function SliderManager() {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
@@ -308,7 +308,7 @@ function SliderManager() {
               required
             ></textarea>
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="photo">Image</label>
             <input
@@ -326,7 +326,7 @@ function SliderManager() {
               </div>
             )}
           </div>
-          
+
           <div className="form-actions">
             <button type="button" onClick={resetForm} className="cancel-btn">
               Cancel
@@ -342,9 +342,9 @@ function SliderManager() {
         {sliders.length > 0 ? (
           sliders.map(slider => (
             <div key={slider.id} className="item-card">
-              <img 
-                src={`http://13.215.253.107:5000${slider.imageUrl}`} 
-                alt={slider.title} 
+              <img
+                src={`http://13.215.253.107:5000${slider.imageUrl}`}
+                alt={slider.title}
                 className="item-image"
               />
               <div className="item-content">
@@ -394,11 +394,11 @@ function ArticleManager() {
       setLoading(true);
       const response = await fetch('http://13.215.253.107:5000/articles');
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.message);
       }
-      
+
       setArticles(data.data || []);
       setError(null);
     } catch (err) {
@@ -426,7 +426,7 @@ function ArticleManager() {
         ...formData,
         photo: file
       });
-      
+
       // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -451,32 +451,32 @@ function ArticleManager() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.content || (!formData.photo && !editingId)) {
       alert('Please fill all fields and upload an image');
       return;
     }
-    
+
     try {
       setLoading(true);
-      
+
       const formDataObj = new FormData();
       formDataObj.append('title', formData.title);
       formDataObj.append('content', formData.content);
       if (formData.photo) {
         formDataObj.append('photo', formData.photo);
       }
-      
+
       const adminToken = localStorage.getItem('adminToken');
-      
+
       let url = 'http://13.215.253.107:5000/admin/articles';
       let method = 'POST';
-      
+
       if (editingId) {
         url = `http://13.215.253.107:5000/admin/articles/${editingId}`;
         method = 'PUT';
       }
-      
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -484,13 +484,13 @@ function ArticleManager() {
         },
         body: formDataObj
       });
-      
+
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.message);
       }
-      
+
       // Refresh articles
       fetchArticles();
       resetForm();
@@ -520,25 +520,25 @@ function ArticleManager() {
     if (!window.confirm('Are you sure you want to delete this article?')) {
       return;
     }
-    
+
     try {
       setLoading(true);
-      
+
       const adminToken = localStorage.getItem('adminToken');
-      
+
       const response = await fetch(`http://13.215.253.107:5000/admin/articles/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${adminToken}`
         }
       });
-      
+
       const data = await response.json();
-      
+
       if (data.error) {
         throw new Error(data.message);
       }
-      
+
       // Refresh articles
       fetchArticles();
       alert('Article deleted successfully!');
@@ -572,7 +572,7 @@ function ArticleManager() {
     <div className="article-manager">
       <div className="manager-header">
         <h2>Manage Articles</h2>
-        <button 
+        <button
           className="add-btn"
           onClick={() => setShowForm(!showForm)}
         >
@@ -583,7 +583,7 @@ function ArticleManager() {
       {showForm && (
         <form className="admin-form" onSubmit={handleSubmit}>
           <h3>{editingId ? 'Edit Article' : 'Add New Article'}</h3>
-          
+
           <div className="form-group">
             <label htmlFor="title">Title</label>
             <input
@@ -595,7 +595,7 @@ function ArticleManager() {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="content">Content</label>
             <textarea
@@ -607,7 +607,7 @@ function ArticleManager() {
               required
             ></textarea>
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="photo">Image</label>
             <input
@@ -625,7 +625,7 @@ function ArticleManager() {
               </div>
             )}
           </div>
-          
+
           <div className="form-actions">
             <button type="button" onClick={resetForm} className="cancel-btn">
               Cancel
@@ -641,9 +641,9 @@ function ArticleManager() {
         {articles.length > 0 ? (
           articles.map(article => (
             <div key={article.id} className="item-card">
-              <img 
-                src={`http://13.215.253.107:5000${article.imageUrl}`} 
-                alt={article.title} 
+              <img
+                src={`http://13.215.253.107:5000${article.imageUrl}`}
+                alt={article.title}
                 className="item-image"
               />
               <div className="item-content">
