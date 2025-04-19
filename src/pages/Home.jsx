@@ -52,7 +52,7 @@ function Home() {
     <>
       {/* Slider Section */}
       <section className="slider-section">
-        <h2>Featured Content</h2>
+        <h2 className='text-lg font-semibold text-slate-500'>Featured Content</h2>
         <div className="sliders-container">
           {homeData.sliders && homeData.sliders.length > 0 ? (
             homeData.sliders.map(slider => (
@@ -76,7 +76,7 @@ function Home() {
 
       {/* Articles Section */}
       <section className="articles-section">
-        <h2>Health Articles</h2>
+        <h2 className='text-lg font-semibold text-slate-500'>Health Articles</h2>
         <div className="articles-container">
           {homeData.articles && homeData.articles.length > 0 ? (
             homeData.articles.map(article => (
