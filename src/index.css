@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   /* Health-oriented color palette - Light Blue Theme */
   --primary-color: #2196F3;      /* Blue - represents trust and professionalism */
