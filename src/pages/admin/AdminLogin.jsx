@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authAPI } from '../services/api';
-import '../App.css';
+import { handleAdminLogin } from '../../presenters/admin/adminLoginPresenter';
+import '../../App.css';
 
 function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -10,31 +10,19 @@ function AdminLogin() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      setError('Please enter both email and password');
-      return;
-    }
+    const { success, error: loginError } = await handleAdminLogin({
+      email,
+      password,
+      setLoading,
+      setError,
+      navigate,
+    });
 
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await authAPI.adminLogin({ email, password });
-
-      // Save admin token to localStorage
-      localStorage.setItem('adminToken', response.loginResult.token);
-      localStorage.setItem('adminId', response.loginResult.adminId);
-      localStorage.setItem('adminName', response.loginResult.name);
-
-      // Redirect to admin dashboard
-      navigate('/admin');
-    } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
+    if (!success) {
+      console.error('Login failed:', loginError);
     }
   };
 
@@ -45,7 +33,7 @@ function AdminLogin() {
 
         {error && <div className="error-message">{error}</div>}
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={onSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -83,7 +71,6 @@ function AdminLogin() {
           <p><Link to="/login">Back to User Login</Link></p>
         </div>
 
-        {/* Debug info */}
         <div className="debug-info" style={{ marginTop: '20px', fontSize: '12px', color: '#999' }}>
           <p>API URL: {import.meta.env.VITE_API_URL || 'http://13.215.253.107:5000'}</p>
         </div>
