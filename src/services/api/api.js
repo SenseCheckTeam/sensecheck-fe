@@ -1,6 +1,6 @@
 // API service for interacting with the backend
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://13.215.253.107:5000';
+const API_URL = import.meta.env.VITE_API_URL;
 console.log('API URL:', API_URL);
 
 // Helper function for making API requests

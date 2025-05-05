@@ -9,7 +9,7 @@ import Layout from './components/Layout'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import AdminLogin from './pages/AdminLogin'
+import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import Articles from './pages/Articles'
 
