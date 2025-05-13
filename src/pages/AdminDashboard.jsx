@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 // Komponen untuk dashboard admin
 function AdminDashboard() {
@@ -94,7 +95,7 @@ function SliderManager() {
   const fetchSliders = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://13.215.253.107:5000/sliders');
+      const response = await fetch(`${VITE_API_URL}/sliders`);
       const data = await response.json();
 
       if (data.error) {
@@ -171,11 +172,11 @@ function SliderManager() {
 
       const adminToken = localStorage.getItem('adminToken');
 
-      let url = 'http://13.215.253.107:5000/admin/sliders';
+      let url = `${VITE_API_URL}/admin/sliders`;
       let method = 'POST';
 
       if (editingId) {
-        url = `http://13.215.253.107:5000/admin/sliders/${editingId}`;
+        url = `${VITE_API_URL}/admin/sliders/${editingId}`;
         method = 'PUT';
       }
 
@@ -213,7 +214,7 @@ function SliderManager() {
       photo: null
     });
     setEditingId(slider.id);
-    setPreviewUrl(`http://13.215.253.107:5000${slider.imageUrl}`);
+    setPreviewUrl(`${slider.imageUrl}`);
     setShowForm(true);
   };
 
@@ -228,7 +229,7 @@ function SliderManager() {
 
       const adminToken = localStorage.getItem('adminToken');
 
-      const response = await fetch(`http://13.215.253.107:5000/admin/sliders/${id}`, {
+      const response = await fetch(`${VITE_API_URL}/admin/sliders/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${adminToken}`
@@ -343,7 +344,7 @@ function SliderManager() {
           sliders.map(slider => (
             <div key={slider.id} className="item-card">
               <img
-                src={`http://13.215.253.107:5000${slider.imageUrl}`}
+                src={`${slider.imageUrl}`}
                 alt={slider.title}
                 className="item-image"
               />
@@ -392,7 +393,7 @@ function ArticleManager() {
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://13.215.253.107:5000/articles');
+      const response = await fetch(`${VITE_API_URL}/articles`);
       const data = await response.json();
 
       if (data.error) {
@@ -469,11 +470,11 @@ function ArticleManager() {
 
       const adminToken = localStorage.getItem('adminToken');
 
-      let url = 'http://13.215.253.107:5000/admin/articles';
+      let url = `${VITE_API_URL}/admin/articles`;
       let method = 'POST';
 
       if (editingId) {
-        url = `http://13.215.253.107:5000/admin/articles/${editingId}`;
+        url = `${VITE_API_URL}/admin/articles/${editingId}`;
         method = 'PUT';
       }
 
@@ -511,7 +512,7 @@ function ArticleManager() {
       photo: null
     });
     setEditingId(article.id);
-    setPreviewUrl(`http://13.215.253.107:5000${article.imageUrl}`);
+    setPreviewUrl(`${article.imageUrl}`);
     setShowForm(true);
   };
 
@@ -526,7 +527,7 @@ function ArticleManager() {
 
       const adminToken = localStorage.getItem('adminToken');
 
-      const response = await fetch(`http://13.215.253.107:5000/admin/articles/${id}`, {
+      const response = await fetch(`${VITE_API_URL}/admin/articles/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${adminToken}`
@@ -642,7 +643,7 @@ function ArticleManager() {
           articles.map(article => (
             <div key={article.id} className="item-card">
               <img
-                src={`http://13.215.253.107:5000${article.imageUrl}`}
+                src={`${article.imageUrl}`}
                 alt={article.title}
                 className="item-image"
               />

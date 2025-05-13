@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { contentAPI } from '../services/api/api';
 import '../App.css';
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function Articles() {
   const [loading, setLoading] = useState(true);
@@ -54,7 +55,7 @@ function Articles() {
           articles.map(article => (
             <div key={article.id} className="article-card">
               <img
-                src={`http://13.215.253.107:5000${article.imageUrl}`}
+                src={`${article.imageUrl}`}
                 alt={article.title}
                 className="article-image"
               />

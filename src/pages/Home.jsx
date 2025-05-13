@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { contentAPI } from '../services/api/api';
 import '../App.css';
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function Home() {
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,7 @@ function Home() {
             homeData.sliders.map(slider => (
               <div key={slider.id} className="slider-card">
                 <img
-                  src={`http://13.215.253.107:5000${slider.imageUrl}`}
+                  src={`${slider.imageUrl}`}
                   alt={slider.title}
                   className="slider-image"
                 />
@@ -82,7 +83,7 @@ function Home() {
             homeData.articles.map(article => (
               <div key={article.id} className="article-card">
                 <img
-                  src={`http://13.215.253.107:5000${article.imageUrl}`}
+                  src={`${article.imageUrl}`}
                   alt={article.title}
                   className="article-image"
                 />
