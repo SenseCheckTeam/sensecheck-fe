@@ -20,7 +20,7 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--background-light);
+  background: linear-gradient(to bottom, #CCE4FF,#ffffff);
   color: var(--text-primary);
   line-height: 1.6;
 }
@@ -43,8 +43,8 @@ body {
 
 /* Navbar Styles */
 .navbar {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--background-white);
+  color: #65ADFF;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -53,7 +53,7 @@ body {
 }
 
 .navbar-logo a {
-  color: white;
+  color: #65ADFF;
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: bold;
@@ -66,7 +66,7 @@ body {
 }
 
 .navbar-links a {
-  color: white;
+  color: #65ADFF;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem;
@@ -91,7 +91,7 @@ body {
 .user-menu .nav-button,
 .user-menu a {
   background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: #65ADFF;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   text-decoration: none;
@@ -109,7 +109,7 @@ body {
 
 .logout-btn {
   background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: #65ADFF;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -283,59 +283,156 @@ body {
 }
 
 /* Slider Section */
-.slider-section {
-  padding: 3rem 2rem;
-  background-color: var(--background-white);
+
+
+.slider-wrapper {
+  margin-top: 2rem;
+  margin-bottom: 0; /* atau kecilkan misal 0.2rem */
+  padding-bottom: 0;  /* Atau nilai yang kamu mau, misal 60px, 80px, dst */
 }
 
-.slider-section h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: var(--text-primary);
+@media (max-width: 640px) {
+  .slider-wrapper {
+    width: 100%;       /* supaya lebar penuh */
+    max-width: 100%;   /* override max-width desktop kalau ada */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;  /* boleh dikurangi kalau pengen lebih rapat */
+    padding-right: 1rem;
+  }
 }
 
-.sliders-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
+/* Container slider slick */
+.slick-slider {
+  max-width: 1200px; /* diperlebar */
+  margin: 0 auto;
+  margin-top: 24px;
+  position: relative;
 }
 
 .slider-card {
-  width: 100%;
-  max-width: 400px;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: white;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  background-color: #fff;
+  cursor: pointer;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  outline: none;
 }
 
-.slider-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+.slider-card:hover,
+.slider-card:focus {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
 }
 
 .slider-image {
   width: 100%;
-  height: 200px;
+  height: 280px;
   object-fit: cover;
+  border-bottom: 4px solid var(--primary-color, #3f51b5);
+  transition: filter 0.3s ease;
+}
+
+.slider-card:hover .slider-image,
+.slider-card:focus .slider-image {
+  filter: brightness(1.1);
 }
 
 .slider-content {
-  padding: 1.5rem;
+  padding: 1.75rem 2rem 2rem;
 }
 
 .slider-content h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
   color: var(--text-primary);
+  font-weight: 600;
 }
 
 .slider-content p {
   color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
 }
+
+/* Slick dots styling */
+.slick-dots {
+  bottom: -35px;
+}
+
+.slick-dots li button:before {
+  font-size: 12px;
+  color: var(--primary-color, #3f51b5);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.slick-dots li.slick-active button:before {
+  opacity: 1;
+  color: var(--primary-color, #3f51b5);
+}
+
+/* Slick arrows styling */
+.slick-prev,
+.slick-next {
+  width: 36px;
+  height: 36px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+  background-color: var(--primary-color, #3f51b5);
+}
+
+.slick-prev:before,
+.slick-next:before {
+  font-size: 20px;
+  color: white;
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slider-section {
+    padding: 3rem 2rem;
+    margin-top: 3rem;
+  }
+
+  .slider-card {
+    max-width: 90vw;
+  }
+
+  .slider-image {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slider-section {
+    padding: 2rem 1rem;
+    margin-top: 2rem;
+  }
+
+  .slider-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .slider-content h3 {
+    font-size: 1.3rem;
+  }
+
+  .slider-image {
+    height: 150px;
+  }
+}
+
+
 
 /* Articles Section */
 .articles-section {
@@ -617,15 +714,16 @@ body {
 
 /* Footer */
 .app-footer {
-  background-color: var(--primary-dark);
-  color: white;
+  background: radial-gradient(to bottom, #E3F0FF, #ffffff);
+  color: #65ADFF;
   text-align: center;
   padding: 1.5rem;
   margin-top: auto;
 }
 
+
 /* Responsive Design */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .app-header h1 {
     font-size: 1.5rem;
   }
@@ -643,4 +741,38 @@ body {
   .placeholder-content h2 {
     font-size: 1.5rem;
   }
+} */
+
+
+.logo-img {
+  height: 80px;
+  width: auto;
 }
+
+.logo-wrapper {
+  margin: 0;        /* reset margin */
+  padding: 0;       /* reset padding */
+  display: flex;
+  justify-content: center;
+}
+
+.logo-row {
+  margin: 0;        /* reset margin */
+  padding: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-besar {
+  width: 600px;
+  height: auto;
+}
+
+.coba-sekarang {
+  width: 380px;
+  height: auto;
+}
+
+
