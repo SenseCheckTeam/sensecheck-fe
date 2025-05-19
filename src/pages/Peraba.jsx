@@ -1,6 +1,7 @@
 import React from 'react';
 import '../App.css';
 import perabaIcon from '../assets/icons/peraba.png';
+import perabaImage from '../assets/gambarMacamIndra/perabaan.jpg';
 import BackButton from '../components/BackButton';
 
 function Peraba() {
@@ -15,6 +16,9 @@ function Peraba() {
       </div>
 
       <div className="sense-content">
+        <div className="sense-image-container">
+          <img src={perabaImage} alt="Indra Peraba" className="sense-image" />
+        </div>
         <section className="sense-section">
           <h2 className="sense-section-title">Tentang Indra Peraba</h2>
           <p className="sense-text">

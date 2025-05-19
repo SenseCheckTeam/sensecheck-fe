@@ -1,6 +1,7 @@
 import React from 'react';
 import '../App.css';
 import pengecapanIcon from '../assets/icons/pengecapan.png';
+import pengecapanImage from '../assets/gambarMacamIndra/pengecap.webp';
 import BackButton from '../components/BackButton';
 
 function Pengecapan() {
@@ -15,6 +16,9 @@ function Pengecapan() {
       </div>
 
       <div className="sense-content">
+        <div className="sense-image-container">
+          <img src={pengecapanImage} alt="Indra Pengecapan" className="sense-image" />
+        </div>
         <section className="sense-section">
           <h2 className="sense-section-title">Tentang Indra Pengecapan</h2>
           <p className="sense-text">

@@ -1,6 +1,7 @@
 import React from 'react';
 import '../App.css';
 import penciumanIcon from '../assets/icons/penciuman.png';
+import penciumanImage from '../assets/gambarMacamIndra/penciuman.jpg';
 import BackButton from '../components/BackButton';
 
 function Penciuman() {
@@ -15,6 +16,9 @@ function Penciuman() {
       </div>
 
       <div className="sense-content">
+        <div className="sense-image-container">
+          <img src={penciumanImage} alt="Indra Penciuman" className="sense-image" />
+        </div>
         <section className="sense-section">
           <h2 className="sense-section-title">Tentang Indra Penciuman</h2>
           <p className="sense-text">
