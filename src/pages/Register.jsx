@@ -4,7 +4,7 @@ import { authAPI } from '../services/api/api';
 import '../App.css';
 
 function Register() {
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,105 +14,110 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
-    if (!name || !email || !password || !confirmPassword) {
-      setError('Please fill in all fields');
+    if (!username || !email || !password || !confirmPassword) {
+      setError('Mohon isi semua kolom');
       return;
     }
-    
+
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Password tidak cocok');
       return;
     }
-    
+
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError('Password harus minimal 8 karakter');
       return;
     }
-    
+
     try {
       setLoading(true);
       setError(null);
-      
-      await authAPI.register({ name, email, password });
-      
+
+      await authAPI.register({ name: username, email, password });
+
       // Redirect to login page after successful registration
-      navigate('/login', { state: { message: 'Registration successful! Please login.' } });
+      navigate('/login', { state: { message: 'Registrasi berhasil! Silakan login.' } });
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
+      setError(err.message || 'Registrasi gagal. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Register</h2>
-        
-        {error && <div className="error-message">{error}</div>}
-        
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+    <div className="signup-container">
+      <div className="signup-card">
+        <h1 className="signup-title">Selamat Datang!</h1>
+        <p className="signup-subtitle">Tolong masukkan data mu untuk membuat akun</p>
+
+        {error && <div className="signup-error">{error}</div>}
+
+        <form className="signup-form" onSubmit={handleSubmit}>
+          <div className="signup-form-group">
+            <label htmlFor="username">Username</label>
             <input
               type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              id="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               disabled={loading}
               required
             />
           </div>
-          
-          <div className="form-group">
+
+          <div className="signup-form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
+              placeholder="Youremail@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               required
             />
           </div>
-          
-          <div className="form-group">
+
+          <div className="signup-form-group">
             <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
+              placeholder="Masukkan Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
               required
             />
           </div>
-          
-          <div className="form-group">
+
+          <div className="signup-form-group">
             <label htmlFor="confirmPassword">Confirm Password</label>
             <input
               type="password"
               id="confirmPassword"
+              placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={loading}
               required
             />
           </div>
-          
-          <button 
-            type="submit" 
-            className="auth-button"
+
+          <button
+            type="submit"
+            className="signup-button"
             disabled={loading}
           >
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Mendaftar...' : 'Sign Up'}
           </button>
         </form>
-        
-        <div className="auth-links">
-          <p>Already have an account? <Link to="/login">Login</Link></p>
+
+        <div className="signup-links">
+          <p>Sudah punya Akun? <Link to="/login">Masuk</Link></p>
         </div>
       </div>
     </div>
