@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { contentAPI } from '../services/api/api';
 import '../App.css';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import { HomePresenter } from '../presenters/homePresenter';
-import logoBesar from '../assets/logoBesar.svg';
-import cobaSekarang from '../assets/cobaSekarang.svg';
+
+// Import components
+import SliderSection from '../components/SliderSection';
+import LogoDescriptionSection from '../components/LogoDescriptionSection';
+import SensorySection from '../components/SensorySection';
+import PartnerSection from '../components/PartnerSection';
+import FadeInSection from '../components/FadeInSection';
 
 function Home() {
   const [loading, setLoading] = useState(true);
@@ -46,43 +48,34 @@ function Home() {
     );
   }
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    centerMode: true,
-    centerPadding: '0px',
-  };
-  
+  // Slider settings dan sensory data tidak lagi diperlukan karena sudah dikelola oleh komponen masing-masing
 
   return (
-    <>
+    <div className="home-container">
       {/* Slider Section */}
-      <section >
-        <div className="slider-wrapper">
-          <Slider {...sliderSettings}>
-            {homeData.sliders.map((slider) => (
-              <div key={slider.id} className="slider-card">
-                <img src={slider.imageUrl} alt="slider" className="slider-image" />
-              </div>
-            ))}
-          </Slider>
-        </div>
-      </section>
+      <FadeInSection>
+        <SliderSection sliders={homeData.sliders} />
+      </FadeInSection>
 
-      <div className='logo-wrapper'>
-        <div className="logo-row">
-          <img src={logoBesar} alt="Sense Check" className="logo-besar hidden md:block" />
-          <img src={cobaSekarang} alt="Coba Sekarang" className="coba-sekarang" />
-        </div>
-      </div>
+      {/* Logo and Description Section */}
+      <FadeInSection delay="100">
+        <LogoDescriptionSection
+          title="Sense Check"
+          description="Aplikasi Aplikasi untuk mendiagnosa Penyakit dengan cepat menggunakan penglihatan, pendengaran, penciuman, pengecapan, peraba."
+          buttonText="Coba Sekarang!"
+        />
+      </FadeInSection>
 
+      {/* Sensory Section */}
+      <FadeInSection delay="200">
+        <SensorySection title="Macam-macam Indra" />
+      </FadeInSection>
 
-
-    </>
+      {/* Partners Section */}
+      <FadeInSection delay="300">
+        <PartnerSection title="Our Partner" />
+      </FadeInSection>
+    </div>
   );
 }
 
