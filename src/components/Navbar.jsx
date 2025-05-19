@@ -1,93 +1,56 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, NavLink } from 'react-router-dom';
 import '../App.css';
-import logo from '../assets/logo.png';
+import logo from '../assets/logoBaru.png';
 
 function Navbar() {
   const location = useLocation();
-  const isLoggedIn = localStorage.getItem('token') !== null;
-  const userName = localStorage.getItem('name');
-  const isAdmin = localStorage.getItem('adminToken') !== null;
-  const adminName = localStorage.getItem('adminName');
+  const [scrolled, setScrolled] = useState(false);
 
-  const handleUserLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('name');
-    window.location.href = '/';
-  };
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
 
-  const handleAdminLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminId');
-    localStorage.removeItem('adminName');
-    window.location.href = '/';
-  };
+    document.addEventListener('scroll', handleScroll);
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrolled]);
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-logo">
         <Link to="/">
-          <img src={logo} alt="HealthDiagnose Logo" className="logo" />
+          <img src={logo} alt="SenseCheck Logo" className="logo" />
         </Link>
       </div>
 
-
       <div className="navbar-links">
-        <Link
-          to="/"
-          className={location.pathname === '/' ? 'active' : ''}
+        <NavLink
+          to="/about"
+          className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
         >
-          Home
-        </Link>
+          About
+        </NavLink>
 
-        <Link
-          to="/articles"
-          className={location.pathname === '/articles' ? 'active' : ''}
+        <NavLink
+          to="/signup"
+          className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
         >
-          Articles
-        </Link>
+          Sign Up
+        </NavLink>
 
-        {isAdmin ? (
-          <div className="user-menu">
-            <span className="user-name">Admin: {adminName}</span>
-            <Link
-              to="/admin"
-              className={location.pathname.startsWith('/admin') ? 'active' : ''}
-            >
-              Dashboard
-            </Link>
-            <button onClick={handleAdminLogout} className="logout-btn">Logout</button>
-          </div>
-        ) : isLoggedIn ? (
-          <div className="user-menu">
-            <span className="user-name">Hello, {userName}</span>
-            <button onClick={handleUserLogout} className="logout-btn">Logout</button>
-          </div>
-        ) : (
-          <>
-            <Link
-              to="/login"
-              className={location.pathname === '/login' ? 'active' : ''}
-            >
-              Login
-            </Link>
-
-            <Link
-              to="/register"
-              className={location.pathname === '/register' ? 'active' : ''}
-            >
-              Register
-            </Link>
-
-            <Link
-              to="/admin/login"
-              className={location.pathname === '/admin/login' ? 'active' : ''}
-            >
-              Admin
-            </Link>
-          </>
-        )}
+        <NavLink
+          to="/login"
+          className={({ isActive }) => isActive ? "login-btn active" : "login-btn"}
+        >
+          Log In
+        </NavLink>
       </div>
     </nav>
   );
