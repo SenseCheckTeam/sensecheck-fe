@@ -9,39 +9,42 @@ import penglihatanIcon from '../assets/icons/penglihatan.png';
 import penciumanIcon from '../assets/icons/penciuman.png';
 import pengecapanIcon from '../assets/icons/pengecapan.png';
 
-function SensorySection({ title = "Macam-macam Indra", sensoryItems }) {
-  // Default sensory data if none provided
-  const defaultSensoryData = [
-    { id: 1, name: 'Peraba', icon: perabaIcon },
-    { id: 2, name: 'Pendengaran', icon: pendengaranIcon },
-    { id: 3, name: 'Penglihatan', icon: penglihatanIcon },
-    { id: 4, name: 'Penciuman', icon: penciumanIcon },
-    { id: 5, name: 'Pengecapan', icon: pengecapanIcon },
+function SensorySection({ title, pancaIndra }) {
+  const sensoryData = [
+    { name: 'peraba', icon: perabaIcon },
+    { name: 'pendengaran', icon: pendengaranIcon },
+    { name: 'penglihatan', icon: penglihatanIcon },
+    { name: 'penciuman', icon: penciumanIcon },
+    { name: 'pengecapan', icon: pengecapanIcon },
   ];
-
-  // Use provided sensory items or default
-  const sensoryData = sensoryItems || defaultSensoryData;
 
   return (
     <section className="sensory-section">
       <h2 className="section-title">{title}</h2>
       <h3 className="sensory-subtitle">Ketuk untuk mempelajari panca indra yang dipilih</h3>
       <div className="sensory-icons">
-        {sensoryData.map((sense) => (
-          <Link
-            key={sense.id}
-            to={`/${sense.name.toLowerCase()}`}
-            className="sensory-item"
-          >
-            <div className="sensory-icon-wrapper">
-              <img src={sense.icon} alt={sense.name} className="sensory-icon" />
-            </div>
-            <p className="sensory-name">{sense.name}</p>
-          </Link>
-        ))}
+        {sensoryData.map((item) => {
+          const sense = pancaIndra?.[item.name];
+          if (!sense) return null;
+
+          return (
+              <Link
+                key={sense.id}
+                to={`/${item.name}`}
+                state={{ data: sense }}
+                className="sensory-item"
+              >
+              <div className="sensory-icon-wrapper">
+                <img src={item.icon} alt={sense.title} className="sensory-icon" />
+              </div>
+              <p className="sensory-name">{sense.title}</p>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
 }
+
 
 export default SensorySection;

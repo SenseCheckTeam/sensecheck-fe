@@ -113,6 +113,10 @@ export const contentAPI = {
   getArticleById: (id) => fetchAPI(`/articles/${id}`, {
     skipAuth: true,
   }),
+
+  getPancaIndra: () => fetchAPI('/panca-indra', {
+    skipAuth: true,
+  }),
 };
 
 export default {

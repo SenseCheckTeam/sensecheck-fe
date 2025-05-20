@@ -13,7 +13,7 @@ import FadeInSection from '../components/FadeInSection';
 function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [homeData, setHomeData] = useState({ sliders: [], articles: [] });
+  const [homeData, setHomeData] = useState({ sliders: [], articles: [], pancaIndra: [] });
 
   const view = {
     setLoading,
@@ -68,7 +68,7 @@ function Home() {
 
       {/* Sensory Section */}
       <FadeInSection delay="200">
-        <SensorySection title="Macam-macam Indra" />
+        <SensorySection title="Macam-macam Indra" pancaIndra={homeData.pancaIndra} />
       </FadeInSection>
 
       {/* Partners Section */}
