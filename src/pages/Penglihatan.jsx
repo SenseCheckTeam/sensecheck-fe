@@ -35,7 +35,7 @@ function Penglihatan() {
 
       <div className="sense-content">
         {penglihatan.imageUrl && (
-          <div className="sense-image-wrapper">
+          <div className="sense-image-container">
             <img
               src={penglihatan.imageUrl}
               alt={penglihatan.title}

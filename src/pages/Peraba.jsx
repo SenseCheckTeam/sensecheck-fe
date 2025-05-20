@@ -33,7 +33,7 @@ function Peraba() {
 
       <div className="sense-content">
         {peraba.imageUrl && (
-          <div className="sense-image-wrapper">
+          <div className="sense-image-container">
             <img
               src={peraba.imageUrl}
               alt={peraba.title}
@@ -41,6 +41,7 @@ function Peraba() {
             />
           </div>
         )}
+
         <section className="sense-section">
           <h2 className="sense-section-title">Tentang {peraba.title}</h2>
           <p className="sense-text">{peraba.description}</p>

@@ -31,7 +31,7 @@ function Pendengaran() {
 
       <div className="sense-content">
         {pendengaran.imageUrl && (
-          <div className="sense-image-wrapper">
+          <div className="sense-image-container">
             <img
               src={pendengaran.imageUrl}
               alt={pendengaran.title}

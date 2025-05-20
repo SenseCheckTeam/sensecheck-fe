@@ -519,14 +519,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: calc(100vh - 175px);
+  min-height: calc(100vh - 175px);
   position: relative;
   background-color: #e6f2ff;
   padding-top: 6rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-bottom: 0;
-  overflow: hidden;
+  padding-bottom: 3rem; /* Add padding at the bottom */
+  overflow: visible; /* Allow content to be visible outside the container */
 }
 
 .diagnosis-content {
@@ -534,6 +534,7 @@ body {
   max-width: 1000px;
   text-align: center;
   animation: fadeIn 0.5s ease-out;
+  padding-bottom: 2rem; /* Add padding at the bottom */
 }
 
 .diagnosis-title {
@@ -549,6 +550,7 @@ body {
   flex-wrap: wrap;
   gap: 3rem;
   margin-top: 1rem;
+  margin-bottom: 2rem; /* Add margin at the bottom */
 }
 
 .diagnosis-sensory-item {
@@ -578,6 +580,8 @@ body {
   border: 2px solid #65ADFF;
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 1 / 1; /* Ensure it stays a perfect circle */
+  position: relative;
 }
 
 .diagnosis-sensory-item:hover .diagnosis-sensory-icon-wrapper {
@@ -642,6 +646,9 @@ body {
   align-items: center;
   margin-right: 1.5rem;
   border: 2px solid #65ADFF;
+  aspect-ratio: 1 / 1; /* Ensure it stays a perfect circle */
+  position: relative;
+  min-width: 60px; /* Prevent shrinking */
 }
 
 .diagnosis-form-icon {
@@ -1635,10 +1642,14 @@ body {
 
 .sensory-icon-wrapper {
   width: 120px;
-  height: auto;
+  height: 120px;
   margin-bottom: 1rem;
   position: relative;
   overflow: visible;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sensory-icon {
@@ -1800,6 +1811,78 @@ body {
   font-weight: 400;
 }
 
+/* Team Members Styles */
+.team-members-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 2rem;
+  margin-top: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px;
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+}
+
+.team-member-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background-color: #e6f2ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #65ADFF;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 1 / 1;
+  position: relative;
+  min-width: 120px;
+}
+
+.team-member-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-member-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #65ADFF;
+}
+
+.team-member-name {
+  font-size: 1.2rem;
+  color: #65ADFF;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.team-member-class {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 /* Sense Page Styles */
 .sense-page-container {
   max-width: 1200px;
@@ -1841,6 +1924,28 @@ body {
   flex-direction: column;
   gap: 2rem;
   animation: fadeIn 0.6s ease-out;
+}
+
+.sense-image-container {
+  width: 100%;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-out;
+}
+
+.sense-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-height: 400px;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.sense-image-container:hover .sense-image {
+  transform: scale(1.02);
 }
 
 .sense-section {
@@ -1943,6 +2048,8 @@ body {
   .sensory-icon-wrapper {
     width: 80px;
     height: 80px;
+    aspect-ratio: 1 / 1;
+    min-width: 80px;
   }
 
   /* Partner section adjustments */
@@ -1965,6 +2072,22 @@ body {
     font-weight: 700;
   }
 
+  .team-members-container {
+    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 500px;
+  }
+
+  .team-member {
+    width: 130px;
+  }
+
+  .team-member-photo {
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+  }
+
   /* Sense page adjustments */
   .sense-header {
     flex-direction: column;
@@ -1982,6 +2105,10 @@ body {
 
   .sense-section-title {
     font-size: 2rem;
+  }
+
+  .sense-image {
+    max-height: 300px;
   }
 
   /* Back button adjustments */
@@ -2052,6 +2179,8 @@ body {
   .sensory-icon-wrapper {
     width: 60px;
     height: 60px;
+    aspect-ratio: 1 / 1;
+    min-width: 60px;
   }
 
   .sensory-name {
@@ -2067,9 +2196,54 @@ body {
     padding: 1.5rem;
   }
 
+  .team-members-container {
+    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 350px;
+  }
+
+  .team-member {
+    width: 100px;
+  }
+
+  .team-member-photo {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+  }
+
+  .team-member-name {
+    font-size: 0.9rem;
+  }
+
+  .team-member-class {
+    font-size: 0.8rem;
+  }
+
   /* Partner logos */
   .partner-logos {
     gap: 1.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .team-members-container {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 250px;
+  }
+
+  .team-member-photo {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+  }
+
+  .team-member-name {
+    font-size: 0.85rem;
+  }
+
+  .team-member-class {
+    font-size: 0.75rem;
   }
 
   .partner-item {
@@ -2081,7 +2255,9 @@ body {
   .partner-logo {
     max-height: 80px;
   }
+}
 
+@media (max-width: 480px) {
   /* Back button */
   .back-button-circle {
     top: 100px;
@@ -2105,6 +2281,11 @@ body {
   }
 
   /* Diagnosis sections */
+  .diagnosis-container {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
   .diagnosis-title {
     font-size: 2rem;
     margin-bottom: 2rem;
@@ -2117,6 +2298,8 @@ body {
   .diagnosis-sensory-icon-wrapper {
     width: 90px;
     height: 90px;
+    aspect-ratio: 1 / 1;
+    min-width: 90px;
   }
 
   .diagnosis-sensory-name {
@@ -2160,6 +2343,8 @@ body {
   .sensory-icon-wrapper {
     width: 50px;
     height: 50px;
+    aspect-ratio: 1 / 1;
+    min-width: 50px;
   }
 
   .sensory-name {
@@ -2189,6 +2374,11 @@ body {
     height: 35px;
   }
 
+  /* Sense page */
+  .sense-image {
+    max-height: 200px;
+  }
+
   /* Signup/Login form */
   .signup-card {
     padding: 1rem 1.2rem;
@@ -2199,9 +2389,16 @@ body {
   }
 
   /* Diagnosis sections */
+  .diagnosis-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
   .diagnosis-sensory-icon-wrapper {
     width: 70px;
     height: 70px;
+    aspect-ratio: 1 / 1;
+    min-width: 70px;
   }
 
   .diagnosis-sensory-name {
