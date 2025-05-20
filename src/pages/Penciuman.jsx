@@ -29,7 +29,7 @@ function Penciuman() {
 
       <div className="sense-content">
         {penciuman.imageUrl && (
-          <div className="sense-image-wrapper">
+          <div className="sense-image-container">
             <img
               src={penciuman.imageUrl}
               alt={penciuman.title}
@@ -37,6 +37,7 @@ function Penciuman() {
             />
           </div>
         )}
+
         <section className="sense-section">
           <h2 className="sense-section-title">Tentang Indra Penciuman</h2>
           <p className="sense-text">{penciuman.description}</p>

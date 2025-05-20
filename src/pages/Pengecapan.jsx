@@ -31,7 +31,7 @@ function Pengecapan() {
 
       <div className="sense-content">
         {pengecapan.imageUrl && (
-          <div className="sense-image-wrapper">
+          <div className="sense-image-container">
             <img
               src={pengecapan.imageUrl}
               alt={pengecapan.title}
