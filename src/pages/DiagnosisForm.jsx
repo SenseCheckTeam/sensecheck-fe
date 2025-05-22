@@ -2,36 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../App.css';
 
-// Import komponen
+// Komponen
 import BackButton from '../components/BackButton';
-
-// Import sensory icons
-import perabaIcon from '../assets/icons/peraba.png';
-import pendengaranIcon from '../assets/icons/pendengaran.png';
-import penglihatanIcon from '../assets/icons/penglihatan.png';
-import penciumanIcon from '../assets/icons/penciuman.png';
-import pengecapanIcon from '../assets/icons/pengecapan.png';
+import { contentAPI } from '../services/api/api'; // pastikan path ini benar
 
 function DiagnosisForm() {
   const { senseType } = useParams();
   const navigate = useNavigate();
+
   const [diagnosisText, setDiagnosisText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [senseData, setSenseData] = useState(null);
 
-  // Map sense type to icon and title
-  const sensoryInfo = {
-    peraba: { icon: perabaIcon, title: 'Peraba' },
-    penciuman: { icon: penciumanIcon, title: 'Penciuman' },
-    pendengaran: { icon: pendengaranIcon, title: 'Pendengaran' },
-    penglihatan: { icon: penglihatanIcon, title: 'Penglihatan' },
-    pengecapan: { icon: pengecapanIcon, title: 'Pengecapan' },
-  };
+  useEffect(() => {
+    async function fetchIndra() {
+      try {
+        const response = await contentAPI.getPancaIndra();
+        const data = response.data;
 
-  // Get current sense info
-  const currentSense = sensoryInfo[senseType] || { icon: null, title: 'Tidak Ditemukan' };
+        // Pastikan senseType valid (peraba, penciuman, dst)
+        const selectedSense = data[senseType];
+        if (!selectedSense) {
+          setError('Indra tidak ditemukan');
+        } else {
+          setSenseData(selectedSense);
+        }
+      } catch (err) {
+        setError('Gagal memuat data indra dari server');
+      }
+    }
 
-  // Placeholder text based on sense type
+    fetchIndra();
+  }, [senseType]);
+
   const getPlaceholderText = () => {
     switch (senseType) {
       case 'peraba':
@@ -61,11 +65,8 @@ function DiagnosisForm() {
       setLoading(true);
       setError(null);
 
-      // Here you would typically send the diagnosis text to your API
-      // For now, we'll just simulate a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000)); // simulasi submit
 
-      // Navigate to the diagnosis result page
       navigate('/diagnosis-result', {
         state: {
           senseType,
@@ -79,24 +80,28 @@ function DiagnosisForm() {
     }
   };
 
+  if (error) return <p style={{ padding: '1rem' }}>{error}</p>;
+  if (!senseData) return <p style={{ padding: '1rem' }}>Memuat data...</p>;
+
   return (
     <div className="diagnosis-form-container">
       <div className="diagnosis-form-content">
         <div style={{ marginBottom: '1.5rem' }}>
           <BackButton />
         </div>
+
         <div className="diagnosis-form-header">
-          {currentSense.icon && (
+          {senseData.logoUrl && (
             <div className="diagnosis-form-icon-wrapper">
               <img
-                src={currentSense.icon}
-                alt={currentSense.title}
+                src={senseData.logoUrl}
+                alt={senseData.title}
                 className="diagnosis-form-icon"
               />
             </div>
           )}
           <h1 className="diagnosis-form-title">
-            Diagnosis {currentSense.title}
+            Diagnosis {senseData.title}
           </h1>
         </div>
 
