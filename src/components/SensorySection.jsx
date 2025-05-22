@@ -2,20 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css';
 
-// Import sensory icons
-import perabaIcon from '../assets/icons/peraba.png';
-import pendengaranIcon from '../assets/icons/pendengaran.png';
-import penglihatanIcon from '../assets/icons/penglihatan.png';
-import penciumanIcon from '../assets/icons/penciuman.png';
-import pengecapanIcon from '../assets/icons/pengecapan.png';
 
 function SensorySection({ title, pancaIndra }) {
   const sensoryData = [
-    { name: 'peraba', icon: perabaIcon },
-    { name: 'pendengaran', icon: pendengaranIcon },
-    { name: 'penglihatan', icon: penglihatanIcon },
-    { name: 'penciuman', icon: penciumanIcon },
-    { name: 'pengecapan', icon: pengecapanIcon },
+    { name: 'peraba'},
+    { name: 'pendengaran'},
+    { name: 'penglihatan'},
+    { name: 'penciuman'},
+    { name: 'pengecapan'},
   ];
 
   return (
