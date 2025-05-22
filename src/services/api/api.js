@@ -121,6 +121,10 @@ export const contentAPI = {
   getPartners: () => fetchAPI('/partner', {
     skipAuth: true,
   }),
+
+  getHero: () => fetchAPI('/hero', {
+    skipAuth: true,
+  }),
 };
 
 export default {
