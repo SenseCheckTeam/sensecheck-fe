@@ -13,7 +13,7 @@ import FadeInSection from '../components/FadeInSection';
 function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [homeData, setHomeData] = useState({ sliders: [], articles: [], pancaIndra: [] });
+  const [homeData, setHomeData] = useState({ sliders: [], articles: [], pancaIndra: [],partner:[] });
 
   const view = {
     setLoading,
@@ -73,7 +73,7 @@ function Home() {
 
       {/* Partners Section */}
       <FadeInSection delay="300">
-        <PartnerSection title="Our Partner" />
+        <PartnerSection title="Our Partner" partners={homeData.partner} />
       </FadeInSection>
     </div>
   );

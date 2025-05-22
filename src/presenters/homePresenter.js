@@ -7,14 +7,16 @@ export class HomePresenter {
   async loadHomeData() {
     this.view.setLoading(true);
     try {
-      const [sliders,pancaIndraResponse] = await Promise.all([
+      const [sliders,pancaIndraResponse,partnerResponse] = await Promise.all([
         this.contentAPI.getSliders(),
         this.contentAPI.getPancaIndra(),
+        this.contentAPI.getPartners()
       ]);
 
       this.view.setHomeData({
         sliders: sliders.data,
         pancaIndra: pancaIndraResponse.data,
+        partner: partnerResponse.data
       });
 
     } catch (error) {
