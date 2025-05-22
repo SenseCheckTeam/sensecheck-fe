@@ -13,7 +13,7 @@ import FadeInSection from '../components/FadeInSection';
 function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [homeData, setHomeData] = useState({ sliders: [], articles: [], pancaIndra: [],partner:[] });
+  const [homeData, setHomeData] = useState({ sliders: [], articles: [], pancaIndra: [],partner:[], hero: [] });
 
   const view = {
     setLoading,
@@ -30,6 +30,10 @@ function Home() {
     presenterRef.current.loadHomeData();
   }, []);
 
+  useEffect(() => {
+    console.log('homeData.hero:', homeData.hero);
+  }, [homeData.hero]);
+  
   if (loading) {
     return (
       <div className="placeholder-content">
@@ -60,9 +64,7 @@ function Home() {
       {/* Logo and Description Section */}
       <FadeInSection delay="100">
         <LogoDescriptionSection
-          title="Sense Check"
-          description="Aplikasi Aplikasi untuk mendiagnosa Penyakit dengan cepat menggunakan penglihatan, pendengaran, penciuman, pengecapan, peraba."
-          buttonText="Coba Sekarang!"
+          hero={homeData.hero}
         />
       </FadeInSection>
 
