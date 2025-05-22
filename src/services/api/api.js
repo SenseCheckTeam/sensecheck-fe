@@ -117,6 +117,10 @@ export const contentAPI = {
   getPancaIndra: () => fetchAPI('/panca-indra', {
     skipAuth: true,
   }),
+
+  getPartners: () => fetchAPI('/partner', {
+    skipAuth: true,
+  }),
 };
 
 export default {
