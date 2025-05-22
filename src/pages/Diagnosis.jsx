@@ -1,26 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css';
 
-// Import komponen
 import BackButton from '../components/BackButton';
-
-// Import sensory icons
-import perabaIcon from '../assets/icons/peraba.png';
-import pendengaranIcon from '../assets/icons/pendengaran.png';
-import penglihatanIcon from '../assets/icons/penglihatan.png';
-import penciumanIcon from '../assets/icons/penciuman.png';
-import pengecapanIcon from '../assets/icons/pengecapan.png';
+import { contentAPI } from '../services/api/api'; // pastikan path ini benar
 
 function Diagnosis() {
-  // Sensory data
-  const sensoryData = [
-    { id: 1, name: 'Peraba', icon: perabaIcon, route: 'peraba' },
-    { id: 2, name: 'Penciuman', icon: penciumanIcon, route: 'penciuman' },
-    { id: 3, name: 'Pendengaran', icon: pendengaranIcon, route: 'pendengaran' },
-    { id: 4, name: 'Penglihatan', icon: penglihatanIcon, route: 'penglihatan' },
-    { id: 5, name: 'Pengecapan', icon: pengecapanIcon, route: 'pengecapan' },
-  ];
+  const [indraList, setIndraList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchIndra() {
+      try {
+        setLoading(true);
+        const response = await contentAPI.getPancaIndra();
+        const data = response.data;
+
+        // Konversi object menjadi array
+        const arrayIndra = [
+          { key: 'peraba', ...data.peraba },
+          { key: 'penciuman', ...data.penciuman },
+          { key: 'pendengaran', ...data.pendengaran },
+          { key: 'penglihatan', ...data.penglihatan },
+          { key: 'pengecapan', ...data.pengecapan }
+        ];
+
+        setIndraList(arrayIndra);
+      } catch (err) {
+        setError('Gagal memuat data panca indra');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchIndra();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="diagnosis-container">
@@ -31,16 +49,16 @@ function Diagnosis() {
         <h1 className="diagnosis-title">Pilih Indra untuk di diagnosa</h1>
 
         <div className="diagnosis-sensory-icons">
-          {sensoryData.map((sense) => (
+          {indraList.map((sense) => (
             <Link
               key={sense.id}
-              to={`/diagnosis/${sense.route}`}
+              to={`/diagnosis/${sense.key}`}
               className="diagnosis-sensory-item"
             >
               <div className="diagnosis-sensory-icon-wrapper">
-                <img src={sense.icon} alt={sense.name} className="diagnosis-sensory-icon" />
+                <img src={sense.logoUrl} alt={sense.title} className="diagnosis-sensory-icon" />
               </div>
-              <p className="diagnosis-sensory-name">{sense.name}</p>
+              <p className="diagnosis-sensory-name">{sense.title}</p>
             </Link>
           ))}
         </div>
