@@ -6,7 +6,7 @@ import '../App.css';
 import BackButton from '../components/BackButton';
 
 // Import gambar lokal
-import dermatitisImage from '../assets/placeholder/dermatitis.jpg';
+import dermatitisImage from '../assets/logoBaru.png';
 
 function DiagnosisResult() {
   const location = useLocation();
