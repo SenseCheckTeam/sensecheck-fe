@@ -35,7 +35,7 @@ function SensorySection({ title, pancaIndra }) {
                 className="sensory-item"
               >
               <div className="sensory-icon-wrapper">
-                <img src={item.icon} alt={sense.title} className="sensory-icon" />
+                <img src={sense.logoUrl} alt={sense.title} className="sensory-icon" />
               </div>
               <p className="sensory-name">{sense.title}</p>
             </Link>
