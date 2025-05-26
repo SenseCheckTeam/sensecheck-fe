@@ -18,23 +18,23 @@ function History() {
           {
             id: 1,
             senseType: 'Penglihatan',
+            disease: 'Katarak',
             date: '2024-01-15',
-            result: 'Normal',
-            score: 85
+            percentage: 99
           },
           {
             id: 2,
             senseType: 'Pendengaran',
+            disease: 'Tinnitus',
             date: '2024-01-10',
-            result: 'Perlu Perhatian',
-            score: 65
+            percentage: 85
           },
           {
             id: 3,
             senseType: 'Penciuman',
+            disease: 'Anosmia',
             date: '2024-01-05',
-            result: 'Normal',
-            score: 90
+            percentage: 92
           }
         ];
         setHistoryData(mockHistory);
@@ -62,7 +62,7 @@ function History() {
         <div style={{ marginBottom: '1.5rem' }}>
           <BackButton />
         </div>
-        
+
         <h1 className="history-title">Riwayat Diagnosis</h1>
         <p className="history-subtitle">Halo {user?.name}, berikut adalah riwayat diagnosis Anda</p>
 
@@ -81,10 +81,10 @@ function History() {
                 </div>
                 <div className="history-item-content">
                   <div className="history-result">
-                    <span className={`result-badge ${item.result === 'Normal' ? 'normal' : 'warning'}`}>
-                      {item.result}
-                    </span>
-                    <span className="history-score">Skor: {item.score}/100</span>
+                    <div className="disease-info">
+                      <span className="disease-name">{item.disease}</span>
+                      <span className="disease-percentage">Persentase: {item.percentage}%</span>
+                    </div>
                   </div>
                 </div>
               </div>

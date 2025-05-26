@@ -212,6 +212,137 @@ body {
   animation: fadeIn 0.6s ease-out;
 }
 
+/* Error Boundary Styles */
+.error-boundary-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #ffe6e6 0%, #fff0f0 100%);
+}
+
+.error-boundary-content {
+  max-width: 600px;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  box-shadow: 0 10px 30px rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.1);
+  animation: fadeIn 0.6s ease-out;
+}
+
+.error-icon {
+  margin: 1rem auto 2rem auto;
+  animation: errorFloat 3s ease-in-out infinite;
+}
+
+@keyframes errorFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.error-boundary-content h1 {
+  font-size: 2.5rem;
+  color: #f44336;
+  margin: 1rem 0;
+  font-weight: 700;
+}
+
+.error-boundary-content .error-description {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.error-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.error-btn.primary {
+  background-color: #65ADFF;
+  color: white;
+  box-shadow: 0 4px 12px rgba(101, 173, 255, 0.3);
+}
+
+.error-btn.primary:hover {
+  background-color: #4a9aff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(101, 173, 255, 0.4);
+}
+
+.error-btn.secondary {
+  background-color: #6c757d;
+  color: white;
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.error-btn.secondary:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+}
+
+.error-details {
+  margin-top: 2rem;
+  text-align: left;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.error-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+.error-stack {
+  margin-top: 1rem;
+}
+
+.error-stack h4 {
+  color: #f44336;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.error-stack pre {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
 /* Loading and Error States */
 .placeholder-content {
   display: flex;
@@ -1071,22 +1202,32 @@ body {
   font-size: 1rem;
 }
 
-.logout-btn {
+/* Admin Dashboard Logout Button */
+.admin-header .logout-btn {
   background-color: #65ADFF;
   color: white;
   border: none;
-  padding: 0.6rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  padding: 0.8rem 1.8rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(101, 173, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.logout-btn:hover {
+.admin-header .logout-btn:hover {
   background-color: #4a9aff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(101, 173, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(101, 173, 255, 0.4);
+  color: white;
+}
+
+.admin-header .logout-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(101, 173, 255, 0.3);
 }
 
 .admin-tabs {
@@ -2801,6 +2942,14 @@ body {
     font-size: 1.5rem;
   }
 
+  /* Admin logout button mobile styling */
+  .admin-header .logout-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+  }
+
   .admin-tabs {
     flex-direction: column;
     padding: 0;
@@ -3074,14 +3223,15 @@ body {
   text-align: center;
 }
 
-.logout-btn {
+/* Sidebar Logout Button */
+.sidebar .logout-btn {
   margin-top: 1rem;
   border-top: 1px solid #e0e0e0;
   padding-top: 1.5rem;
   color: #f44336 !important;
 }
 
-.logout-btn:hover {
+.sidebar .logout-btn:hover {
   background-color: rgba(244, 67, 54, 0.1) !important;
   color: #d32f2f !important;
 }
@@ -3195,6 +3345,24 @@ body {
 
 .history-score {
   color: #666;
+  font-weight: 600;
+}
+
+.disease-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.disease-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.disease-percentage {
+  font-size: 0.95rem;
+  color: #65ADFF;
   font-weight: 600;
 }
 
