@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import Sidebar from './Sidebar';
 import '../App.css';
 import logo from '../assets/logoBaru.png';
 
 function Navbar() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { isAuthenticated, user } = useAuth();
 
   // Handle scroll effect
   useEffect(() => {
@@ -38,20 +42,44 @@ function Navbar() {
           About
         </NavLink>
 
-        <NavLink
-          to="/signup"
-          className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-        >
-          Sign Up
-        </NavLink>
+        {isAuthenticated ? (
+          // Show user profile when logged in
+          <div className="navbar-user">
+            <button
+              className="user-profile-btn"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <div className="user-avatar">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+              <span className="user-name">{user?.name}</span>
+            </button>
+          </div>
+        ) : (
+          // Show login/signup when not logged in
+          <>
+            <NavLink
+              to="/register"
+              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            >
+              Sign Up
+            </NavLink>
 
-        <NavLink
-          to="/login"
-          className={({ isActive }) => isActive ? "login-btn active" : "login-btn"}
-        >
-          Log In
-        </NavLink>
+            <NavLink
+              to="/login"
+              className={({ isActive }) => isActive ? "login-btn active" : "login-btn"}
+            >
+              Log In
+            </NavLink>
+          </>
+        )}
       </div>
+
+      {/* Sidebar */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
     </nav>
   );
 }
