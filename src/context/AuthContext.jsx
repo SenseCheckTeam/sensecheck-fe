@@ -1,46 +1,81 @@
-import React, { createContext, useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { authAPI } from '../services/api/api';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (userData) => {
-    console.log('Login with:', userData);
-    // In a real app, you would validate credentials with a backend
-    setIsAuthenticated(true);
-    setUser({ email: userData.email });
-  };
+  // Check authentication status on app load
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      const name = localStorage.getItem('name');
+      const email = localStorage.getItem('email');
 
-  const register = (userData) => {
-    console.log('Register with:', userData);
-    // In a real app, you would send this data to a backend
+      if (token && userId && name) {
+        setIsAuthenticated(true);
+        setUser({
+          id: userId,
+          name: name,
+          email: email,
+          token: token
+        });
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, []);
+
+  const login = (loginData) => {
+    // Save to localStorage
+    localStorage.setItem('token', loginData.token);
+    localStorage.setItem('userId', loginData.userId);
+    localStorage.setItem('name', loginData.name);
+    localStorage.setItem('email', loginData.email);
+
+    // Update state
     setIsAuthenticated(true);
-    setUser({ email: userData.email });
+    setUser({
+      id: loginData.userId,
+      name: loginData.name,
+      email: loginData.email,
+      token: loginData.token
+    });
   };
 
   const logout = () => {
+    // Clear localStorage
+    authAPI.logout();
+
+    // Update state
     setIsAuthenticated(false);
     setUser(null);
   };
 
+  const value = {
+    isAuthenticated,
+    user,
+    loading,
+    login,
+    logout
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated,
-        user,
-        login,
-        register,
-        logout
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }

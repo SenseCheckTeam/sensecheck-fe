@@ -23,7 +23,7 @@ function AdminLogin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       setError('Email dan password harus diisi');
       return;
@@ -69,7 +69,7 @@ function AdminLogin() {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Admin Login</h2>
-        
+
         {error && (
           <div className="error-message">
             {error}
@@ -98,17 +98,17 @@ function AdminLogin() {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              placeholder="Masukkan password"
+              placeholder="Masukkan Password"
               required
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="auth-button"
             disabled={loading}
           >
-            {loading ? 'Loading...' : 'Login'}
+            {loading ? 'Loading...' : 'log In'}
           </button>
         </form>
       </div>
