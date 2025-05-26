@@ -123,23 +123,25 @@ function PancaIndraManager({ data, onDataChange }) {
     <div className="pancaindra-manager">
       <div className="manager-header">
         <h2>Manage Panca Indra</h2>
-        <select
-          value={selectedIndra}
-          onChange={(e) => setSelectedIndra(e.target.value)}
-          className="indra-selector"
-        >
-          {indraOptions.map(option => (
-            <option key={option.key} value={option.key}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <button
-          className="add-btn"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Cancel' : `Edit ${selectedIndra}`}
-        </button>
+        <div className="header-controls">
+          <select
+            value={selectedIndra}
+            onChange={(e) => setSelectedIndra(e.target.value)}
+            className="indra-selector"
+          >
+            {indraOptions.map(option => (
+              <option key={option.key} value={option.key}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <button
+            className="add-btn"
+            onClick={() => setShowForm(!showForm)}
+          >
+            {showForm ? 'Cancel' : `Edit ${selectedIndra}`}
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -240,17 +242,30 @@ function PancaIndraManager({ data, onDataChange }) {
       )}
 
       {data && data[selectedIndra] && (
-        <div className="items-list">
+        <div className="pancaindra-display">
           <div className="item-card">
             <div className="indra-images">
-              <img src={data[selectedIndra].logoUrl} alt="Logo" className="item-image-small" />
-              <img src={data[selectedIndra].imageUrl} alt="Main" className="item-image" />
+              {data[selectedIndra].logoUrl && (
+                <div className="image-container">
+                  <label className='logo-image-label'>Logo Image:</label>
+                  <img src={data[selectedIndra].logoUrl} alt="Logo" className="item-image-small" />
+                </div>
+              )}
+              {data[selectedIndra].imageUrl && (
+                <div className="image-container">
+                  <label>Main Image:</label>
+                  <img src={data[selectedIndra].imageUrl} alt="Main" className="item-image" />
+                </div>
+              )}
             </div>
             <div className="item-content">
               <h3>{data[selectedIndra].title}</h3>
               <h4>{data[selectedIndra].subtitle}</h4>
-              <p>{data[selectedIndra].description}</p>
-              <p><strong>Button URL:</strong> {data[selectedIndra].buttonUrl}</p>
+              <p className="description-text">{data[selectedIndra].description}</p>
+              <div className="button-url-info">
+                <strong>Button URL:</strong>
+                <span className="url-text">{data[selectedIndra].buttonUrl}</span>
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { authAPI } from '../services/api/api';
+import { useAuth } from '../context/AuthContext';
 import '../App.css';
 
 function Login() {
@@ -9,6 +10,11 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+
+  // Get the intended destination from location state
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,13 +30,16 @@ function Login() {
 
       const response = await authAPI.login({ email, password });
 
-      // Save token to localStorage
-      localStorage.setItem('token', response.loginResult.token);
-      localStorage.setItem('userId', response.loginResult.userId);
-      localStorage.setItem('name', response.loginResult.name);
+      // Use AuthContext login function
+      login({
+        token: response.loginResult.token,
+        userId: response.loginResult.userId,
+        name: response.loginResult.name,
+        email: email // Pass the email that was used for login
+      });
 
-      // Redirect to home page
-      navigate('/');
+      // Redirect to intended destination or home page
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || 'Login gagal. Silakan periksa kredensial Anda.');
     } finally {
@@ -87,7 +96,7 @@ function Login() {
         </form>
 
         <div className="signup-links">
-          <p>Belum punya Akun? <Link to="/signup">Buat Akun</Link></p>
+          <p>Belum punya Akun? <Link to="/register">Buat Akun</Link></p>
         </div>
       </div>
     </div>
