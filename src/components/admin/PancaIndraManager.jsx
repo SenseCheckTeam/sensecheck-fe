@@ -28,8 +28,8 @@ function PancaIndraManager({ data, onDataChange }) {
   ];
 
   useEffect(() => {
-    if (data && data[selectedIndra]) {
-      const indraData = data[selectedIndra];
+    if (data && data.length > 0 && data[0][selectedIndra]) {
+      const indraData = data[0][selectedIndra];
       setFormData({
         title: indraData.title || '',
         subtitle: indraData.subtitle || '',
