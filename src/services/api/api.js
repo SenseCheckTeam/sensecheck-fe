@@ -128,7 +128,15 @@ export const contentAPI = {
   }),
 };
 
+// Admin API calls
+export const adminAPI = {
+  getDashboard: () => fetchAPI('/admin/dashboard', {
+    isAdmin: true,
+  }),
+};
+
 export default {
   auth: authAPI,
   content: contentAPI,
+  admin: adminAPI,
 };
