@@ -146,9 +146,9 @@ function PartnerManager({ data, onDataChange }) {
         </form>
       )}
 
-      {data && data.partner && data.partner.length > 0 && (
+      {data && data[0]?.partner && data[0].partner.length > 0 && (
         <div className="items-list">
-          {data.partner.map(partner => (
+          {data[0].partner.map(partner => (
             <div key={partner.id} className="item-card">
               <img src={partner.imageUrl} alt="Partner" className="item-image" />
               <div className="item-content">
