@@ -1,6 +1,6 @@
+// HeroManager.jsx
 import React, { useState, useEffect } from 'react';
-
-const API = import.meta.env.VITE_API_URL;
+import { heroPresenter } from '../../presenters/heroPresenter';
 
 function HeroManager({ data, onDataChange }) {
   const [loading, setLoading] = useState(false);
@@ -10,164 +10,77 @@ function HeroManager({ data, onDataChange }) {
     description: '',
     textButton: '',
     buttonUrl: '',
-    photo: null
+    photo: null,
+    imageUrl: ''
   });
   const [previewUrl, setPreviewUrl] = useState('');
 
   useEffect(() => {
-    if (data && data.length > 0) {
-      setFormData({
-        title: data[0].title || '',
-        description: data[0].description || '',
-        textButton: data[0].textButton || '',
-        buttonUrl: data[0].buttonUrl || '',
-        photo: null
-      });
-      setPreviewUrl(data[0].imageUrl || '');
+    const initialized = heroPresenter.initializeFormData(data);
+    if (initialized) {
+      setFormData(initialized);
+      setPreviewUrl(initialized.imageUrl);
     }
   }, [data]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    heroPresenter.handleInputChange(e, formData, setFormData);
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({
-        ...formData,
-        photo: file
-      });
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+    heroPresenter.handleFileChange(e, formData, setFormData, setPreviewUrl);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      setLoading(true);
-
-      const formDataObj = new FormData();
-      formDataObj.append('title', formData.title);
-      formDataObj.append('description', formData.description);
-      formDataObj.append('textButton', formData.textButton);
-      formDataObj.append('buttonUrl', formData.buttonUrl);
-      if (formData.photo) {
-        formDataObj.append('photo', formData.photo);
-      }
-
-      const adminToken = localStorage.getItem('adminToken');
-      const heroId = data && data.length > 0 ? data[0].id : null;
-
-      const response = await fetch(`${API}/admin/hero${heroId ? `/${heroId}` : ''}`, {
-        method: heroId ? 'PUT' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${adminToken}`
-        },
-        body: formDataObj
-      });
-
-      const result = await response.json();
-
-      if (result.error) {
-        throw new Error(result.message);
-      }
-
-      alert(heroId ? 'Hero updated successfully!' : 'Hero created successfully!');
-      setShowForm(false);
-      onDataChange();
-    } catch (err) {
-      console.error('Error saving hero:', err);
-      alert(`Failed to save hero: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
+    heroPresenter.handleSubmit({
+      formData,
+      data,
+      setLoading,
+      setShowForm,
+      onDataChange,
+      onSuccess: (msg) => alert(msg),
+      onError: (msg) => alert(msg)
+    });
   };
+  
 
   return (
     <div className="hero-manager">
       <div className="manager-header">
         <h2>Manage Hero Content</h2>
-        <button
-          className="add-btn"
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Cancel' : (data && data.length > 0 ? 'Edit Hero' : 'Add Hero')}
+        <button className="add-btn" onClick={() => setShowForm(!showForm)}>
+          {heroPresenter.getToggleFormLabel(showForm, data)}
         </button>
       </div>
 
       {showForm && (
         <form className="admin-form" onSubmit={handleSubmit}>
-          <h3>{data && data.length > 0 ? 'Edit Hero' : 'Add New Hero'}</h3>
+          <h3>{heroPresenter.getFormTitle(data)}</h3>
 
           <div className="form-group">
             <label htmlFor="title">Title</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              required
-            />
+            <input type="text" id="title" name="title" value={formData.title} onChange={handleInputChange} required />
           </div>
 
           <div className="form-group">
             <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              rows="4"
-              required
-            ></textarea>
+            <textarea id="description" name="description" value={formData.description} onChange={handleInputChange} rows="4" required></textarea>
           </div>
 
           <div className="form-group">
             <label htmlFor="textButton">Button Text</label>
-            <input
-              type="text"
-              id="textButton"
-              name="textButton"
-              value={formData.textButton}
-              onChange={handleInputChange}
-              required
-            />
+            <input type="text" id="textButton" name="textButton" value={formData.textButton} onChange={handleInputChange} required />
           </div>
 
           <div className="form-group">
             <label htmlFor="buttonUrl">Button URL</label>
-            <input
-              type="text"
-              id="buttonUrl"
-              name="buttonUrl"
-              value={formData.buttonUrl}
-              onChange={handleInputChange}
-              required
-            />
+            <input type="text" id="buttonUrl" name="buttonUrl" value={formData.buttonUrl} onChange={handleInputChange} required />
           </div>
 
           <div className="form-group">
             <label htmlFor="photo">Image</label>
-            <input
-              type="file"
-              id="photo"
-              name="photo"
-              accept="image/jpeg, image/png, image/jpg"
-              onChange={handleFileChange}
-              className="file-input"
-            />
+            <input type="file" id="photo" name="photo" accept="image/*" onChange={handleFileChange} className="file-input" />
             {previewUrl && (
               <div className="image-preview">
                 <img src={previewUrl} alt="Preview" />
@@ -176,17 +89,15 @@ function HeroManager({ data, onDataChange }) {
           </div>
 
           <div className="form-actions">
-            <button type="button" onClick={() => setShowForm(false)} className="cancel-btn">
-              Cancel
-            </button>
+            <button type="button" onClick={() => setShowForm(false)} className="cancel-btn">Cancel</button>
             <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? 'Saving...' : (data && data.length > 0 ? 'Update Hero' : 'Create Hero')}
+              {heroPresenter.getSubmitButtonLabel(loading, data)}
             </button>
           </div>
         </form>
       )}
 
-      {data && data.length > 0 && (
+      {data?.length > 0 && (
         <div className="items-list">
           <div className="item-card">
             <img src={data[0].imageUrl} alt={data[0].title} className="item-image" />
