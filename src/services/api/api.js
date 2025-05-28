@@ -65,19 +65,16 @@ export const authAPI = {
     skipAuth: true,
   }),
 
-  // Check if user is logged in
   checkAuth: () => {
     const token = localStorage.getItem('token');
     return !!token;
   },
 
-  // Check if admin is logged in
   checkAdminAuth: () => {
     const token = localStorage.getItem('adminToken');
     return !!token;
   },
 
-  // Logout
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
@@ -85,7 +82,6 @@ export const authAPI = {
     localStorage.removeItem('email');
   },
 
-  // Admin logout
   adminLogout: () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminId');
@@ -95,44 +91,41 @@ export const authAPI = {
 
 // Content API calls
 export const contentAPI = {
-  getHome: () => fetchAPI('/', {
-    skipAuth: true,
-  }),
+  getHome: () => fetchAPI('/', { skipAuth: true }),
 
-  getSliders: () => fetchAPI('/sliders', {
-    skipAuth: true,
-  }),
+  getSliders: () => fetchAPI('/sliders', { skipAuth: true }),
 
-  getSliderById: (id) => fetchAPI(`/sliders/${id}`, {
-    skipAuth: true,
-  }),
+  getSliderById: (id) => fetchAPI(`/sliders/${id}`, { skipAuth: true }),
 
-  getArticles: () => fetchAPI('/articles', {
-    skipAuth: true,
-  }),
+  getArticles: () => fetchAPI('/articles', { skipAuth: true }),
 
-  getArticleById: (id) => fetchAPI(`/articles/${id}`, {
-    skipAuth: true,
-  }),
+  getArticleById: (id) => fetchAPI(`/articles/${id}`, { skipAuth: true }),
 
-  getPancaIndra: () => fetchAPI('/panca-indra', {
-    skipAuth: true,
-  }),
+  getPancaIndra: () => fetchAPI('/panca-indra', { skipAuth: true }),
 
-  getPartners: () => fetchAPI('/partner', {
-    skipAuth: true,
-  }),
+  getPartners: () => fetchAPI('/partner', { skipAuth: true }),
 
-  getHero: () => fetchAPI('/hero', {
-    skipAuth: true,
-  }),
+  getHero: () => fetchAPI('/hero', { skipAuth: true }),
 };
 
 // Admin API calls
 export const adminAPI = {
-  getDashboard: () => fetchAPI('/admin/dashboard', {
-    isAdmin: true,
-  }),
+  getDashboard: () => fetchAPI('/admin/dashboard', { isAdmin: true }),
+
+  uploadHero: (formData, heroId) => {
+    const endpoint = heroId ? `/admin/hero/${heroId}` : '/admin/hero';
+    return fetch(`${API_URL}${endpoint}`, {
+      method: heroId ? 'PUT' : 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+      },
+      body: formData,
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to upload hero');
+      return data;
+    });
+  },
 };
 
 export default {
