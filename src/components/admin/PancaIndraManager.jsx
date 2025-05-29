@@ -1,23 +1,27 @@
-import React, { useState, useEffect } from 'react';
-
-const API = import.meta.env.VITE_API_URL;
+import React, { useEffect, useState } from 'react';
+import { loadPancaIndra, updatePancaIndra } from '../../presenters/pancaIndraPresenter';
 
 function PancaIndraManager({ data, onDataChange }) {
   const [selectedIndra, setSelectedIndra] = useState('peraba');
-  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     title: '',
     subtitle: '',
     description: '',
     buttonUrl: '',
     logoPhoto: null,
     imagePhoto: null
-  });
-  const [previewUrls, setPreviewUrls] = useState({
+  };
+  
+  const initialPreviewUrls = {
     logo: '',
     image: ''
-  });
+  };
+  
+  const [formData, setFormData] = useState(initialFormData);
+  const [previewUrls, setPreviewUrls] = useState(initialPreviewUrls);
+  
+  const [loading, setLoading] = useState(false);
 
   const indraOptions = [
     { key: 'peraba', label: 'Peraba' },
@@ -28,46 +32,25 @@ function PancaIndraManager({ data, onDataChange }) {
   ];
 
   useEffect(() => {
-    if (data && data.length > 0 && data[0][selectedIndra]) {
-      const indraData = data[0][selectedIndra];
-      setFormData({
-        title: indraData.title || '',
-        subtitle: indraData.subtitle || '',
-        description: indraData.description || '',
-        buttonUrl: indraData.buttonUrl || '',
-        logoPhoto: null,
-        imagePhoto: null
-      });
-      setPreviewUrls({
-        logo: indraData.logoUrl || '',
-        image: indraData.imageUrl || ''
-      });
-    }
+    loadPancaIndra(data, selectedIndra, setFormData, setPreviewUrls);
   }, [data, selectedIndra]);
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
-    const { name } = e.target;
-    const file = e.target.files[0];
+    const { name, files } = e.target;
+    const file = files[0];
     if (file) {
-      setFormData({
-        ...formData,
-        [name]: file
-      });
-
+      setFormData(prev => ({ ...prev, [name]: file }));
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewUrls({
-          ...previewUrls,
+        setPreviewUrls(prev => ({
+          ...prev,
           [name === 'logoPhoto' ? 'logo' : 'image']: reader.result
-        });
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -75,45 +58,13 @@ function PancaIndraManager({ data, onDataChange }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
-      setLoading(true);
-
-      const formDataObj = new FormData();
-      formDataObj.append('title', formData.title);
-      formDataObj.append('subtitle', formData.subtitle);
-      formDataObj.append('description', formData.description);
-      formDataObj.append('buttonUrl', formData.buttonUrl);
-      if (formData.logoPhoto) {
-        formDataObj.append('logoPhoto', formData.logoPhoto);
-      }
-      if (formData.imagePhoto) {
-        formDataObj.append('imagePhoto', formData.imagePhoto);
-      }
-
-      const adminToken = localStorage.getItem('adminToken');
-      const indraId = data && data[selectedIndra] ? data[selectedIndra].id : null;
-
-      const response = await fetch(`${API}/admin/${selectedIndra}${indraId ? `/${indraId}` : ''}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${adminToken}`
-        },
-        body: formDataObj
-      });
-
-      const result = await response.json();
-
-      if (result.error) {
-        throw new Error(result.message);
-      }
-
-      alert(`${selectedIndra} updated successfully!`);
+      await updatePancaIndra(formData, selectedIndra, data, onDataChange, setShowForm);
       setShowForm(false);
       onDataChange();
     } catch (err) {
-      console.error('Error saving panca indra:', err);
-      alert(`Failed to save ${selectedIndra}: ${err.message}`);
+      alert(`Failed to update ${selectedIndra}: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -135,10 +86,7 @@ function PancaIndraManager({ data, onDataChange }) {
               </option>
             ))}
           </select>
-          <button
-            className="add-btn"
-            onClick={() => setShowForm(!showForm)}
-          >
+          <button className="add-btn" onClick={() => setShowForm(!showForm)}>
             {showForm ? 'Cancel' : `Edit ${selectedIndra}`}
           </button>
         </div>
@@ -151,7 +99,6 @@ function PancaIndraManager({ data, onDataChange }) {
           <div className="form-group">
             <label htmlFor="title">Title</label>
             <input
-              type="text"
               id="title"
               name="title"
               value={formData.title}
@@ -163,7 +110,6 @@ function PancaIndraManager({ data, onDataChange }) {
           <div className="form-group">
             <label htmlFor="subtitle">Subtitle</label>
             <input
-              type="text"
               id="subtitle"
               name="subtitle"
               value={formData.subtitle}
@@ -177,9 +123,9 @@ function PancaIndraManager({ data, onDataChange }) {
             <textarea
               id="description"
               name="description"
+              rows="6"
               value={formData.description}
               onChange={handleInputChange}
-              rows="6"
               required
             ></textarea>
           </div>
@@ -187,7 +133,6 @@ function PancaIndraManager({ data, onDataChange }) {
           <div className="form-group">
             <label htmlFor="buttonUrl">Button URL</label>
             <input
-              type="text"
               id="buttonUrl"
               name="buttonUrl"
               value={formData.buttonUrl}
@@ -200,9 +145,9 @@ function PancaIndraManager({ data, onDataChange }) {
             <label htmlFor="logoPhoto">Logo Image</label>
             <input
               type="file"
-              id="logoPhoto"
               name="logoPhoto"
-              accept="image/jpeg, image/png, image/jpg"
+              id="logoPhoto"
+              accept="image/*"
               onChange={handleFileChange}
               className="file-input"
             />
@@ -217,15 +162,15 @@ function PancaIndraManager({ data, onDataChange }) {
             <label htmlFor="imagePhoto">Main Image</label>
             <input
               type="file"
-              id="imagePhoto"
               name="imagePhoto"
-              accept="image/jpeg, image/png, image/jpg"
+              id="imagePhoto"
+              accept="image/*"
               onChange={handleFileChange}
               className="file-input"
             />
             {previewUrls.image && (
               <div className="image-preview">
-                <img src={previewUrls.image} alt="Image Preview" />
+                <img src={previewUrls.image} alt="Main Preview" />
               </div>
             )}
           </div>
@@ -247,7 +192,7 @@ function PancaIndraManager({ data, onDataChange }) {
             <div className="indra-images">
               {data[selectedIndra].logoUrl && (
                 <div className="image-container">
-                  <label className='logo-image-label'>Logo Image:</label>
+                  <label className="logo-image-label">Logo Image:</label>
                   <img src={data[selectedIndra].logoUrl} alt="Logo" className="item-image-small" />
                 </div>
               )}
