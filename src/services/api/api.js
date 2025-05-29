@@ -141,6 +141,34 @@ export const adminAPI = {
       return data;
     });
   },
+
+  addPartner: (formData) => {
+    return fetch(`${API_URL}/admin/partner`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+      },
+      body: formData,
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to add partner');
+      return data;
+    });
+  },
+
+  deletePartner: (id) => {
+    return fetch(`${API_URL}/admin/partner/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+      },
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to delete partner');
+      return data;
+    });
+  },
+
   
 };
 
