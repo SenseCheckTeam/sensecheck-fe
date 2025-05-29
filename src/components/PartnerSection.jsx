@@ -28,5 +28,4 @@ function PartnerSection({ title = "Our Partner", partners }) {
   );
 }
 
-
 export default PartnerSection;
