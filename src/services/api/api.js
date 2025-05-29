@@ -126,6 +126,22 @@ export const adminAPI = {
       return data;
     });
   },
+
+  updatePancaIndra: (indraName, indraId, formDataObj) => {
+    const endpoint = `/admin/${indraName}${indraId ? `/${indraId}` : ''}`;
+    return fetch(`${API_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+      },
+      body: formDataObj,
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to update data');
+      return data;
+    });
+  },
+  
 };
 
 export default {
