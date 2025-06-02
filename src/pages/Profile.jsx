@@ -4,13 +4,15 @@ import BackButton from '../components/BackButton';
 import '../App.css';
 
 function Profile() {
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
-    phone: '',
-    address: ''
+    password: ''
   });
 
   // Update form data when user data changes
@@ -19,8 +21,7 @@ function Profile() {
       setFormData({
         name: user.name || '',
         email: user.email || '',
-        phone: '',
-        address: ''
+        password: ''
       });
     }
   }, [user]);
@@ -31,24 +32,97 @@ function Profile() {
       ...prev,
       [name]: value
     }));
+    // Clear messages when user starts typing
+    setError('');
+    setSuccess('');
   };
 
-  const handleSave = () => {
-    // In a real app, you would save this to the backend
-    console.log('Saving profile data:', formData);
-    setIsEditing(false);
-    // Show success message
-    alert('Profile updated successfully!');
+  const handleSave = async () => {
+    if (!formData.name.trim()) {
+      setError('Nama tidak boleh kosong');
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError('Email tidak boleh kosong');
+      return;
+    }
+
+    if (!formData.password.trim()) {
+      setError('Password tidak boleh kosong');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password harus minimal 8 karakter');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Token tidak ditemukan. Silakan login kembali.');
+        return;
+      }
+
+      const updatePayload = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      };
+
+      console.log('Updating profile:', updatePayload);
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/user/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatePayload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || `Update failed: ${response.status}`);
+      }
+
+      console.log('Profile updated successfully:', data);
+
+      // Update AuthContext with new user data
+      login({
+        token: token,
+        userId: user.userId,
+        name: formData.name,
+        email: formData.email
+      });
+
+      setSuccess('Profile berhasil diperbarui!');
+      setIsEditing(false);
+      setFormData(prev => ({ ...prev, password: '' })); // Clear password field
+
+    } catch (err) {
+      console.error('Profile update error:', err);
+      setError(err.message || 'Terjadi kesalahan saat memperbarui profile');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
     setFormData({
       name: user?.name || '',
       email: user?.email || '',
-      phone: '',
-      address: ''
+      password: ''
     });
     setIsEditing(false);
+    setError('');
+    setSuccess('');
   };
 
   return (
@@ -68,9 +142,12 @@ function Profile() {
             </div>
             <div className="profile-info-main">
               <h2>{user?.name}</h2>
-              <p>User ID: {user?.id}</p>
+              <p>User ID: {user?.userId}</p>
             </div>
           </div>
+
+          {error && <div className="profile-error">{error}</div>}
+          {success && <div className="profile-success">{success}</div>}
 
           <div className="profile-form">
             <div className="form-row">
@@ -83,6 +160,8 @@ function Profile() {
                     value={formData.name}
                     onChange={handleInputChange}
                     className="form-input"
+                    disabled={loading}
+                    required
                   />
                 ) : (
                   <div className="form-display">{formData.name}</div>
@@ -100,6 +179,8 @@ function Profile() {
                     value={formData.email}
                     onChange={handleInputChange}
                     className="form-input"
+                    disabled={loading}
+                    required
                   />
                 ) : (
                   <div className="form-display">{formData.email || 'Belum diisi'}</div>
@@ -107,49 +188,41 @@ function Profile() {
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Nomor Telepon</label>
-                {isEditing ? (
+            {isEditing && (
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Password</label>
                   <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    type="password"
+                    name="password"
+                    value={formData.password}
                     onChange={handleInputChange}
                     className="form-input"
-                    placeholder="Masukkan nomor telepon"
+                    placeholder="Masukkan password baru"
+                    disabled={loading}
+                    required
+                    minLength={8}
                   />
-                ) : (
-                  <div className="form-display">{formData.phone || 'Belum diisi'}</div>
-                )}
+                  <small className="form-help">Minimal 8 karakter</small>
+                </div>
               </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Alamat</label>
-                {isEditing ? (
-                  <textarea
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    rows="3"
-                    placeholder="Masukkan alamat lengkap"
-                  />
-                ) : (
-                  <div className="form-display">{formData.address || 'Belum diisi'}</div>
-                )}
-              </div>
-            </div>
+            )}
 
             <div className="profile-actions">
               {isEditing ? (
                 <>
-                  <button onClick={handleSave} className="btn-save">
-                    Simpan
+                  <button 
+                    onClick={handleSave} 
+                    className="btn-save"
+                    disabled={loading}
+                  >
+                    {loading ? 'Menyimpan...' : 'Simpan'}
                   </button>
-                  <button onClick={handleCancel} className="btn-cancel">
+                  <button 
+                    onClick={handleCancel} 
+                    className="btn-cancel"
+                    disabled={loading}
+                  >
                     Batal
                   </button>
                 </>
