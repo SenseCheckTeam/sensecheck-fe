@@ -172,8 +172,49 @@ export const adminAPI = {
   
 };
 
+// Diagnosis API calls
+export const diagnosisAPI = {
+  getSenseData: () => contentAPI.getPancaIndra(),
+
+  getDiagnosisResult: async (payload) => {
+    const MODEL_URL = import.meta.env.VITE_API_MODEL;
+
+    const res = await fetch(MODEL_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Gagal mendapatkan hasil diagnosis');
+    return data;
+  },
+
+  saveDiagnosisToBackend: async (payload) => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem('token');
+
+    if (!token) throw new Error('Token tidak ditemukan');
+
+    const res = await fetch(`${API_URL}/diagnosa`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Gagal menyimpan diagnosis');
+    return data;
+  },
+};
+
+
 export default {
   auth: authAPI,
   content: contentAPI,
   admin: adminAPI,
+  diagnosis: diagnosisAPI,
 };
