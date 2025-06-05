@@ -209,7 +209,65 @@ export const diagnosisAPI = {
     if (!res.ok) throw new Error(data.message || 'Gagal menyimpan diagnosis');
     return data;
   },
+
+  getDiagnosisHistory: async () => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem('token');
+
+    if (!token) throw new Error('Token tidak ditemukan');
+
+    const res = await fetch(`${API_URL}/diagnosa`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Gagal mengambil riwayat diagnosis');
+    return data;
+  },
+
+  getAllPenyakit: async () => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem('token');
+
+    if (!token) throw new Error('Token tidak ditemukan');
+
+    const res = await fetch(`${API_URL}/penyakit`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Gagal mengambil daftar penyakit');
+    return data;
+  },
+
+  getPenyakitDetail: async (id) => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem('token');
+
+    if (!token) throw new Error('Token tidak ditemukan');
+
+    const res = await fetch(`${API_URL}/penyakit/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Gagal mengambil detail penyakit');
+    return data;
+  },
 };
+
 
 
 export default {
