@@ -1,123 +1,108 @@
-import api from '../services/api/api';
+import { useState, useEffect } from 'react';
+import { contentAPI, diagnosisAPI } from '../services/api/api';
 
-export default class DiagnosisPresenter {
-  constructor(senseType, navigate) {
-    this.senseType = senseType;
-    this.navigate = navigate;
-    this.view = null;
+export function useDiagnosisPresenter(senseType, navigate) {
+  const [diagnosisText, setDiagnosisText] = useState('');
+  const [severity, setSeverity] = useState('');
+  const [history, setHistory] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [senseData, setSenseData] = useState(null);
 
-    this.state = {
-      diagnosisText: '',
-      severity: '',
-      history: '',
-      loading: false,
-      error: null,
-      senseData: null,
-    };
-  }
-
-  get initialState() {
-    return this.state;
-  }
-
-  setView(setStateFn) {
-    this.setState = (newState) => {
-      this.state = { ...this.state, ...newState };
-      setStateFn(this.state);
-    };
-  }
-
-  updateField(field, value) {
-    this.setState({ [field]: value });
-  }
-
-  getPlaceholderText() {
-    const map = {
-      peraba: 'Jelaskan apa yang Anda rasakan...',
-      penciuman: 'Jelaskan aroma atau bau...',
-      pendengaran: 'Jelaskan suara yang Anda dengar...',
-      penglihatan: 'Jelaskan apa yang Anda lihat...',
-      pengecapan: 'Jelaskan rasa yang Anda alami...',
-    };
-    return map[this.senseType] || 'Jelaskan gejala Anda...';
-  }
-
-  async loadSenseData() {
-    this.setState({ loading: true });
-    try {
-      const data = await api.diagnosis.getSenseData();
-
-      const selectedSense = data.data;
-  
-      if (!selectedSense) {
-        this.setState({ error: 'Indra tidak ditemukan', loading: false });
-      } else {
-        this.setState({ senseData: selectedSense, loading: false });
+  useEffect(() => {
+    async function fetchSenseData() {
+      try {
+        const response = await contentAPI.getPancaIndra();
+        const data = response.data;
+        const selectedSense = data[senseType];
+        if (!selectedSense) {
+          setError('Indra tidak ditemukan');
+        } else {
+          setSenseData(selectedSense);
+        }
+      } catch {
+        setError('Gagal memuat data indra dari server');
       }
-      this.setState({ senseData: selectedSense });
-      
-    } catch (error) {
-      console.error('loadSenseData error:', error);
-      this.setState({ error: 'Gagal memuat data indra' });
     }
-  }
-  
 
-  async handleSubmit(e) {
+    fetchSenseData();
+  }, [senseType]);
+
+  const getSenseCategory = (type) => {
+    const mapping = {
+      peraba: 'kulit',
+      penciuman: 'hidung',
+      pengecapan: 'lidah',
+      penglihatan: 'mata',
+      pendengaran: 'telinga'
+    };
+    return mapping[type] || type;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { diagnosisText, severity, history } = this.state;
 
-    if (!diagnosisText.trim()) return this.setState({ error: 'Masukkan gejala' });
-    if (!severity) return this.setState({ error: 'Pilih tingkat keparahan' });
-    if (!history) return this.setState({ error: 'Pilih riwayat gejala' });
+    if (!diagnosisText.trim()) return setError('Mohon masukkan deskripsi gejala');
+    if (!severity) return setError('Mohon pilih tingkat keparahan');
+    if (!history) return setError('Mohon pilih apakah ada riwayat serupa sebelumnya');
 
     try {
-      this.setState({ loading: true, error: null });
+      setLoading(true);
+      setError(null);
 
-      const kategori = this.getSenseCategory(this.senseType);
-      const modelPayload = { kategori, gejala: diagnosisText, keparahan: severity, riwayat: history };
+      const kategori = getSenseCategory(senseType);
+      const modelPayload = {
+        kategori,
+        gejala: diagnosisText,
+        keparahan: severity,
+        riwayat: history
+      };
 
-      const modelResult = await api.diagnosis.getDiagnosisResult(modelPayload);
+      // Gunakan API dari diagnosisAPI
+      const modelResult = await diagnosisAPI.getDiagnosisResult(modelPayload);
 
       const userId = localStorage.getItem('userId');
-      if (!userId) throw new Error('User ID tidak ditemukan');
+      if (!userId) throw new Error('User ID tidak ditemukan. Silakan login kembali.');
 
-      const backendPayload = {
+      const diagnosisPayload = {
         userId,
         diagnosis: modelResult.diagnosis,
         saran: modelResult.saran,
-        confidence: modelResult.confidence,
+        confidence: modelResult.confidence
       };
 
-      const backendResult = await api.diagnosis.saveDiagnosisToBackend(backendPayload);
+      const backendResult = await diagnosisAPI.saveDiagnosisToBackend(diagnosisPayload);
 
-      this.navigate('/diagnosis-result', {
+      navigate('/diagnosis-result', {
         state: {
-          senseType: this.senseType,
+          senseType,
           diagnosisText,
           severity,
           history,
           kategori,
           modelResult,
-          backendResult,
-        },
+          backendResult
+        }
       });
 
     } catch (err) {
-      this.setState({ error: err.message });
+      console.error(err);
+      setError(err.message || 'Terjadi kesalahan saat memproses diagnosis.');
     } finally {
-      this.setState({ loading: false });
+      setLoading(false);
     }
-  }
+  };
 
-  getSenseCategory(type) {
-    const map = {
-      peraba: 'kulit',
-      penciuman: 'hidung',
-      pengecapan: 'lidah',
-      penglihatan: 'mata',
-      pendengaran: 'telinga',
-    };
-    return map[type] || type;
-  }
+  return {
+    diagnosisText,
+    severity,
+    history,
+    loading,
+    error,
+    senseData,
+    setDiagnosisText,
+    setSeverity,
+    setHistory,
+    handleSubmit
+  };
 }
