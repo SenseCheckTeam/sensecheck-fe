@@ -1,50 +1,33 @@
-import { contentAPI, diagnosisAPI } from "../services/api/api";
+import { diagnosisAPI } from '../services/api/api';
 
-export const loadIndras = async (setIndras) => {
-  try {
-    const response = await contentAPI.getIndras();
-    setIndras(response.data.data);
-  } catch (error) {
-    console.error("Gagal memuat indra:", error);
-  }
-};
+export async function loadDiagnosisResult() {
 
-export const getDiagnosisResult = async (
-  selectedIndras,
-  setLoading,
-  setResult,
-  setMessage
-) => {
-  setLoading(true);
-  setResult(null);
-  setMessage("");
-
-  try {
-    const userId = localStorage.getItem("userId");
-    const payload = {
-      user_id: userId,
-      indra_ids: selectedIndras,
-    };
-
-    const response = await diagnosisAPI.getResult(payload);
-    const data = response.data.data;
-
-    if (!data || !data.hasil) {
-      setMessage("Hasil diagnosis tidak ditemukan.");
-    } else {
-      const penyakitId = data.hasil.penyakit_id;
-      const penyakitResponse = await diagnosisAPI.getPenyakitDetail(penyakitId);
-
-      setResult({ ...data.hasil, penyakit: penyakitResponse.data.data });
-      await diagnosisAPI.saveDiagnosis({
-        user_id: userId,
-        penyakit_id: penyakitId,
-      });
+    const diagnosisData = await diagnosisAPI.getDiagnosisHistory();
+    if (!diagnosisData.data || diagnosisData.data.length === 0) {
+      throw new Error('Data diagnosis tidak ditemukan');
     }
-  } catch (error) {
-    console.error("Error saat diagnosis:", error);
-    setMessage("Terjadi kesalahan saat proses diagnosis.");
-  } finally {
-    setLoading(false);
+    const latestDiagnosis = diagnosisData.data[0];
+  
+    const penyakitList = await diagnosisAPI.getAllPenyakit();
+  
+    const matchedPenyakit = penyakitList.data.find(
+      (p) => p.name.toLowerCase() === latestDiagnosis.diagnosis.toLowerCase()
+    );
+  
+    if (!matchedPenyakit) {
+      throw new Error(`Penyakit dengan nama "${latestDiagnosis.diagnosis}" tidak ditemukan`);
+    }
+  
+    const penyakitDetail = await diagnosisAPI.getPenyakitDetail(matchedPenyakit.id);
+  
+    const result = {
+      title: latestDiagnosis.diagnosis,
+      probability: latestDiagnosis.confidence,
+      image: penyakitDetail.data.imageUrl,
+      description: penyakitDetail.data.description,
+      recommendations: latestDiagnosis.saran,
+    };
+  
+    return result;
   }
-};
+  
