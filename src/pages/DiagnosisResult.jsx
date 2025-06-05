@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import * as DiagnosisPresenter from "./DiagnosisPresenter";
+import * as DiagnosisPresenter from "../presenters/diagnosisResultPresenter";
 
 const DiagnosisResult = () => {
   const [indras, setIndras] = useState([]);
