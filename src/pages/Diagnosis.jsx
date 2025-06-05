@@ -21,7 +21,7 @@ function Diagnosis() {
         const arrayIndra = [
           { key: 'peraba', ...data.peraba },
           { key: 'penciuman', ...data.penciuman },
-          { key: 'pendengaran', ...data.pendengaran },
+          { key: 'pendengaran', ...data.pendengaran, title: 'Pendengar' },
           { key: 'penglihatan', ...data.penglihatan },
           { key: 'pengecapan', ...data.pengecapan }
         ];

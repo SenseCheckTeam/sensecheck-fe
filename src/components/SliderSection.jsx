@@ -4,6 +4,33 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../App.css';
 
+// Custom Arrow Components
+const CustomPrevArrow = ({ onClick }) => (
+  <button
+    className="carousel-nav-btn carousel-prev"
+    onClick={onClick}
+    aria-label="Previous slide"
+    title="Previous slide"
+  >
+    <svg className="carousel-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </button>
+);
+
+const CustomNextArrow = ({ onClick }) => (
+  <button
+    className="carousel-nav-btn carousel-next"
+    onClick={onClick}
+    aria-label="Next slide"
+    title="Next slide"
+  >
+    <svg className="carousel-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </button>
+);
+
 function SliderSection({ sliders = [], settings }) {
   // Default slider settings if none provided
   const defaultSettings = {
@@ -13,8 +40,12 @@ function SliderSection({ sliders = [], settings }) {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
+    autoplaySpeed: 4000,
     centerMode: true,
     centerPadding: '0px',
+    arrows: true, // Enable navigation arrows
+    prevArrow: <CustomPrevArrow />,
+    nextArrow: <CustomNextArrow />,
   };
 
   // Use provided settings or default

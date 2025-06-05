@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../App.css';
 import BackButton from '../components/BackButton';
-import DiagnosisPresenter from '../presenters/DiagnosisPresenter';
+import DiagnosisPresenter from '../presenters/diagnosisPresenter';
 
 function DiagnosisForm() {
   const { senseType } = useParams();
