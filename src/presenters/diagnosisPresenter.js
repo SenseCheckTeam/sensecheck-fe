@@ -43,16 +43,19 @@ export default class DiagnosisPresenter {
   }
 
   async loadSenseData() {
+    this.setState({ loading: true });
     try {
       const data = await api.diagnosis.getSenseData();
 
       const selectedSense = data.data;
   
       if (!selectedSense) {
-        this.setState({ error: 'Indra tidak ditemukan' });
+        this.setState({ error: 'Indra tidak ditemukan', loading: false });
       } else {
-        this.setState({ senseData: selectedSense });
+        this.setState({ senseData: selectedSense, loading: false });
       }
+      this.setState({ senseData: selectedSense });
+      
     } catch (error) {
       console.error('loadSenseData error:', error);
       this.setState({ error: 'Gagal memuat data indra' });
