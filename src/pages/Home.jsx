@@ -6,6 +6,7 @@ import { HomePresenter } from '../presenters/homePresenter';
 // Import components
 import SliderSection from '../components/SliderSection';
 import LogoDescriptionSection from '../components/LogoDescriptionSection';
+import DiseasesRunningText from '../components/DiseasesRunningText';
 import SensorySection from '../components/SensorySection';
 import PartnerSection from '../components/PartnerSection';
 import FadeInSection from '../components/FadeInSection';
@@ -55,29 +56,34 @@ function Home() {
   // Slider settings dan sensory data tidak lagi diperlukan karena sudah dikelola oleh komponen masing-masing
 
   return (
-    <div className="home-container">
-      {/* Slider Section */}
-      <FadeInSection>
-        <SliderSection sliders={homeData.sliders} />
-      </FadeInSection>
+    <>
+      {/* Slider Section - Moved to top, outside container */}
+      <SliderSection sliders={homeData.sliders} />
 
-      {/* Logo and Description Section */}
-      <FadeInSection delay="100">
-        <LogoDescriptionSection
-          hero={homeData.hero}
-        />
-      </FadeInSection>
+      <div className="home-container">
+        {/* Logo and Description Section */}
+        <FadeInSection delay="100">
+          <LogoDescriptionSection
+            hero={homeData.hero}
+          />
+        </FadeInSection>
 
-      {/* Sensory Section */}
-      <FadeInSection delay="200">
-        <SensorySection title="Macam-macam Indra" pancaIndra={homeData.pancaIndra} />
-      </FadeInSection>
+        {/* Diseases Running Text Section */}
+        <FadeInSection delay="150">
+          <DiseasesRunningText />
+        </FadeInSection>
 
-      {/* Partners Section */}
-      <FadeInSection delay="300">
-        <PartnerSection title="Our Partner" partners={homeData.partner} />
-      </FadeInSection>
-    </div>
+        {/* Sensory Section */}
+        <FadeInSection delay="200">
+          <SensorySection title="Macam-macam Indra" pancaIndra={homeData.pancaIndra} />
+        </FadeInSection>
+
+        {/* Partners Section */}
+        <FadeInSection delay="300">
+          <PartnerSection title="Our Partner" partners={homeData.partner} />
+        </FadeInSection>
+      </div>
+    </>
   );
 }
 

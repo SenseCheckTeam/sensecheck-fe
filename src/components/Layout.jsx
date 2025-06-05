@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import ScrollToTop from './ScrollToTop';
 import '../App.css';
 
@@ -18,9 +19,7 @@ function Layout() {
         </div>
       </main>
 
-      <footer className="app-footer">
-        <p>&copy; {new Date().getFullYear()} SenseCheck. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
