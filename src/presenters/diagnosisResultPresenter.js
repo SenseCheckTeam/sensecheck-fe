@@ -1,4 +1,4 @@
-import { contentAPI, diagnosisAPI } from "../../api/api";
+import { contentAPI, diagnosisAPI } from "../services/api/api";
 
 export const loadIndras = async (setIndras) => {
   try {
