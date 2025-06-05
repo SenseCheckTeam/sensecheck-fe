@@ -4,6 +4,7 @@ import '../App.css';
 import BackButton from '../components/BackButton';
 import { useDiagnosisPresenter } from '../presenters/diagnosisPresenter';
 
+
 function DiagnosisForm() {
   const { senseType } = useParams();
   const navigate = useNavigate();
