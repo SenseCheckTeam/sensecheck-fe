@@ -1,65 +1,108 @@
-import React, { useEffect, useState } from "react";
-import * as DiagnosisPresenter from "../presenters/diagnosisResultPresenter";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import BackButton from '../components/BackButton';
+import { loadDiagnosisResult } from '../presenters/diagnosisResultPresenter';
+import '../App.css';
 
-const DiagnosisResult = () => {
-  const [indras, setIndras] = useState([]);
-  const [selectedIndras, setSelectedIndras] = useState([]);
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+function DiagnosisResult() {
+  const [diagnosisResult, setDiagnosisResult] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    DiagnosisPresenter.loadIndras(setIndras);
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const result = await loadDiagnosisResult();
+        setDiagnosisResult(result);
+      } catch (err) {
+        setError(err.message || 'Terjadi kesalahan saat mengambil data diagnosis');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
   }, []);
 
-  const handleSelect = (e) => {
-    const value = e.target.value;
-    setSelectedIndras((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value]
+  if (loading) {
+    return (
+      <div className="diagnosis-result-container">
+        <BackButton />
+        <div className="diagnosis-result-content">
+          <p style={{ padding: '2rem', textAlign: 'center' }}>Memuat hasil diagnosis...</p>
+        </div>
+      </div>
     );
-  };
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await DiagnosisPresenter.getDiagnosisResult(
-      selectedIndras,
-      setLoading,
-      setResult,
-      setMessage
+  if (error) {
+    return (
+      <div className="diagnosis-result-container">
+        <BackButton />
+        <div className="diagnosis-result-content">
+          <div className="diagnosis-form-error" style={{ margin: '2rem 0' }}>
+            {error}
+          </div>
+          <Link to="/diagnosis" className="diagnosis-result-button">
+            Kembali ke Diagnosis
+          </Link>
+        </div>
+      </div>
     );
-  };
+  }
+
+  if (!diagnosisResult) {
+    return (
+      <div className="diagnosis-result-container">
+        <BackButton />
+        <div className="diagnosis-result-content">
+          <p style={{ padding: '2rem', textAlign: 'center' }}>Data diagnosis tidak ditemukan</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Diagnosis</h1>
-      <form onSubmit={handleSubmit}>
-        {indras.map((indra) => (
-          <label key={indra.id}>
-            <input
-              type="checkbox"
-              value={indra.id}
-              checked={selectedIndras.includes(indra.id)}
-              onChange={handleSelect}
-            />
-            {indra.nama}
-          </label>
-        ))}
-        <button type="submit" disabled={loading}>
-          {loading ? "Memproses..." : "Diagnosa"}
-        </button>
-      </form>
-      {message && <p>{message}</p>}
-      {result && (
-        <div>
-          <h2>Hasil Diagnosis:</h2>
-          <p>Penyakit: {result.penyakit.nama}</p>
-          <p>Deskripsi: {result.penyakit.deskripsi}</p>
+    <div className="diagnosis-result-container">
+      <BackButton />
+      <div className="diagnosis-result-content">
+        <h2 className="diagnosis-result-heading">Hasil Diagnosis</h2>
+
+        <div className="diagnosis-result-title">
+          <h1>{diagnosisResult.title}</h1>
+          <p className="diagnosis-result-probability">
+            Dengan Kemungkinan: <span>{diagnosisResult.probability}</span>
+          </p>
         </div>
-      )}
+
+        {diagnosisResult.image && (
+          <div className="diagnosis-result-image-container">
+            <img
+              src={diagnosisResult.image}
+              alt={diagnosisResult.title}
+              className="diagnosis-result-image"
+            />
+          </div>
+        )}
+
+        <div className="diagnosis-result-description">
+          <p>{diagnosisResult.description}</p>
+        </div>
+
+        <div className="diagnosis-result-recommendations">
+          <h3>Saran Penanganan Pertama</h3>
+          <p>{diagnosisResult.recommendations}</p>
+        </div>
+
+        <div className="diagnosis-result-actions">
+          <Link to="/" className="diagnosis-result-button home-button">
+            Kembali ke Beranda
+          </Link>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
 export default DiagnosisResult;
