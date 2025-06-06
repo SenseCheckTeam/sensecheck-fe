@@ -1,49 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authAPI } from '../services/api/api';
+import { handleRegister } from '../presenters/registerPresenter';
 import '../App.css';
 
 function Register() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [form, setForm] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validation
-    if (!username || !email || !password || !confirmPassword) {
-      setError('Mohon isi semua kolom');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Password tidak cocok');
-      return;
-    }
-
-    if (password.length < 8) {
-      setError('Password harus minimal 8 karakter');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      await authAPI.register({ name: username, email, password });
-
-      // Redirect to login page after successful registration
-      navigate('/login', { state: { message: 'Registrasi berhasil! Silakan login.' } });
-    } catch (err) {
-      setError(err.message || 'Registrasi gagal. Silakan coba lagi.');
-    } finally {
-      setLoading(false);
-    }
+    handleRegister(form, setLoading, setError, navigate);
   };
 
   return (
@@ -60,9 +37,10 @@ function Register() {
             <input
               type="text"
               id="username"
+              name="username"
               placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={form.username}
+              onChange={handleChange}
               disabled={loading}
               required
             />
@@ -73,9 +51,10 @@ function Register() {
             <input
               type="email"
               id="email"
+              name="email"
               placeholder="Youremail@gmail.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={handleChange}
               disabled={loading}
               required
             />
@@ -86,9 +65,10 @@ function Register() {
             <input
               type="password"
               id="password"
+              name="password"
               placeholder="Masukkan Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={form.password}
+              onChange={handleChange}
               disabled={loading}
               required
             />
@@ -99,19 +79,16 @@ function Register() {
             <input
               type="password"
               id="confirmPassword"
+              name="confirmPassword"
               placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={form.confirmPassword}
+              onChange={handleChange}
               disabled={loading}
               required
             />
           </div>
 
-          <button
-            type="submit"
-            className="signup-button"
-            disabled={loading}
-          >
+          <button type="submit" className="signup-button" disabled={loading}>
             {loading ? 'Mendaftar...' : 'Sign Up'}
           </button>
         </form>
