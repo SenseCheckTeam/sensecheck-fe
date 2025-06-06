@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import BackButton from '../components/BackButton';
 import '../App.css';
+import { updateProfile } from '../presenters/profilePresenter';
 
 function Profile() {
   const { user, login } = useAuth();
@@ -15,8 +16,7 @@ function Profile() {
     password: ''
   });
 
-  // Update form data when user data changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       setFormData({
         name: user.name || '',
@@ -32,85 +32,18 @@ function Profile() {
       ...prev,
       [name]: value
     }));
-    // Clear messages when user starts typing
     setError('');
     setSuccess('');
   };
 
   const handleSave = async () => {
-    if (!formData.name.trim()) {
-      setError('Nama tidak boleh kosong');
-      return;
-    }
-
-    if (!formData.email.trim()) {
-      setError('Email tidak boleh kosong');
-      return;
-    }
-
-    if (!formData.password.trim()) {
-      setError('Password tidak boleh kosong');
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError('Password harus minimal 8 karakter');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError('');
-      setSuccess('');
-
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('Token tidak ditemukan. Silakan login kembali.');
-        return;
-      }
-
-      const updatePayload = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
-      };
-
-      console.log('Updating profile:', updatePayload);
-
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/user/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updatePayload)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `Update failed: ${response.status}`);
-      }
-
-      console.log('Profile updated successfully:', data);
-
-      // Update AuthContext with new user data
-      login({
-        token: token,
-        userId: user.userId,
-        name: formData.name,
-        email: formData.email
-      });
-
-      setSuccess('Profile berhasil diperbarui!');
+    const result = await updateProfile(formData, user, login, setLoading);
+    if (result.success) {
+      setSuccess(result.message);
       setIsEditing(false);
-      setFormData(prev => ({ ...prev, password: '' })); // Clear password field
-
-    } catch (err) {
-      console.error('Profile update error:', err);
-      setError(err.message || 'Terjadi kesalahan saat memperbarui profile');
-    } finally {
-      setLoading(false);
+      setFormData(prev => ({ ...prev, password: '' }));
+    } else {
+      setError(result.message);
     }
   };
 
@@ -211,18 +144,10 @@ function Profile() {
             <div className="profile-actions">
               {isEditing ? (
                 <>
-                  <button 
-                    onClick={handleSave} 
-                    className="btn-save"
-                    disabled={loading}
-                  >
+                  <button onClick={handleSave} className="btn-save" disabled={loading}>
                     {loading ? 'Menyimpan...' : 'Simpan'}
                   </button>
-                  <button 
-                    onClick={handleCancel} 
-                    className="btn-cancel"
-                    disabled={loading}
-                  >
+                  <button onClick={handleCancel} className="btn-cancel" disabled={loading}>
                     Batal
                   </button>
                 </>
