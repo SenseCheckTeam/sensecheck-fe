@@ -268,6 +268,15 @@ export const diagnosisAPI = {
   },
 };
 
+// profile
+export const userAPI = {
+  updateProfile: (payload) => fetchAPI('/user/profile', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  }),
+};
+
+
 
 
 export default {
@@ -275,4 +284,5 @@ export default {
   content: contentAPI,
   admin: adminAPI,
   diagnosis: diagnosisAPI,
+  user: userAPI,
 };
