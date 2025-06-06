@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { authAPI } from '../services/api/api';
 import { useAuth } from '../context/AuthContext';
+import { handleLogin } from '../presenters/loginPresenter';
 import '../App.css';
 
 function Login() {
@@ -9,42 +9,15 @@ function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
   const { login } = useAuth();
 
-  // Get the intended destination from location state
-  const from = location.state?.from?.pathname || '/';
-
-  const handleSubmit = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-
-    if (!email || !password) {
-      setError('Mohon masukkan email dan password');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await authAPI.login({ email, password });
-
-      // Use AuthContext login function
-      login({
-        token: response.loginResult.token,
-        userId: response.loginResult.userId,
-        name: response.loginResult.name,
-        email: email // Pass the email that was used for login
-      });
-
-      // Redirect to intended destination or home page
-      navigate(from, { replace: true });
-    } catch (err) {
-      setError(err.message || 'Login gagal. Silakan periksa kredensial Anda.');
-    } finally {
-      setLoading(false);
-    }
+    handleLogin({ email, password, setLoading, setError, login, navigate, from });
   };
 
   return (
@@ -55,7 +28,7 @@ function Login() {
 
         {error && <div className="signup-error">{error}</div>}
 
-        <form className="signup-form" onSubmit={handleSubmit}>
+        <form className="signup-form" onSubmit={onSubmit}>
           <div className="signup-form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -86,11 +59,7 @@ function Login() {
             <Link to="/forgot-password">Lupa Password?</Link>
           </div>
 
-          <button
-            type="submit"
-            className="signup-button"
-            disabled={loading}
-          >
+          <button type="submit" className="signup-button" disabled={loading}>
             {loading ? 'Masuk...' : 'Log In'}
           </button>
         </form>
