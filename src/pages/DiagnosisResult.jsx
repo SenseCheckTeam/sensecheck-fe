@@ -10,20 +10,9 @@ function DiagnosisResult() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      try {
-        const result = await loadDiagnosisResult();
-        setDiagnosisResult(result);
-      } catch (err) {
-        setError(err.message || 'Terjadi kesalahan saat mengambil data diagnosis');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
+    loadDiagnosisResult({ setDiagnosisResult, setError, setLoading });
   }, []);
+  
 
   if (loading) {
     return (
