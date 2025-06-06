@@ -266,7 +266,37 @@ export const diagnosisAPI = {
     if (!res.ok) throw new Error(data.message || 'Gagal mengambil detail penyakit');
     return data;
   },
-};
+
+  getHistoryData: async () => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const token = localStorage.getItem('token');
+  
+    if (!token) throw new Error('Token tidak ditemukan');
+  
+    const res = await fetch(`${API_URL}/diagnosa`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Gagal mengambil riwayat diagnosis');
+  
+    // Transformasi data agar hasilnya seperti sebelumnya
+    return data.data.map((item) => ({
+      id: item.id,
+      senseType: 'Diagnosis',
+      disease: item.diagnosis,
+      date: new Date(item.createdAt).toLocaleDateString('id-ID'),
+      percentage: parseFloat(item.confidence.replace('%', '')),
+      saran: item.saran,
+      createdAt: item.createdAt,
+    }));
+  },
+  
+}
 
 // profile
 export const userAPI = {
