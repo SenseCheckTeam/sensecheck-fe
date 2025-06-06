@@ -1,67 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
+import { useAdminLoginPresenter } from '../presenters/adminLoginPresenter';
 
-const API = import.meta.env.VITE_API_URL;
-
-function AdminLogin() {
+const AdminLogin = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+  const { formData, handleInputChange, handleSubmit } = useAdminLoginPresenter(setLoading, setError);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.email || !formData.password) {
-      setError('Email dan password harus diisi');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError('');
-
-      const response = await fetch(`${API}/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
-      });
-
-      const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.message);
-      }
-
-      // Simpan token dan data admin
-      localStorage.setItem('adminToken', data.loginResult.token);
-      localStorage.setItem('adminId', data.loginResult.adminId);
-      localStorage.setItem('adminName', data.loginResult.name);
-
-      // Redirect ke dashboard
+  const onSubmit = async (e) => {
+    const result = await handleSubmit(e);
+    if (result?.success) {
       navigate('/admin/dashboard');
-    } catch (err) {
-      console.error('Error login admin:', err);
-      setError(err.message || 'Login gagal. Silakan coba lagi.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -76,7 +28,7 @@ function AdminLogin() {
           </div>
         )}
 
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" onSubmit={onSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -114,6 +66,6 @@ function AdminLogin() {
       </div>
     </div>
   );
-}
+};
 
 export default AdminLogin;

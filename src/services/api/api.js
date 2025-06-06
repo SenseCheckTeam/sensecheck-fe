@@ -59,7 +59,7 @@ export const authAPI = {
     skipAuth: true,
   }),
 
-  adminLogin: (credentials) => fetchAPI('/admin', {
+  adminLogin: (credentials) => fetchAPI('/admin/login', {
     method: 'POST',
     body: JSON.stringify(credentials),
     skipAuth: true,
