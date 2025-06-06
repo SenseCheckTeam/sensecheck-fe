@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import BackButton from '../components/BackButton';
 import '../App.css';
+import { loadHistory } from '../presenters/historyPresenter';
 
 function History() {
   const { user } = useAuth();
@@ -10,51 +11,7 @@ function History() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem('token');
-        
-        if (!token) {
-          throw new Error('Token tidak ditemukan. Silakan login kembali.');
-        }
-
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/diagnosa`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`Gagal mengambil riwayat diagnosis: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log('History data from API:', result);
-        
-        // Transformasi data sesuai format yang dibutuhkan komponen
-        const transformedData = result.data.map((item) => ({
-          id: item.id,
-          senseType: 'Diagnosis', // Atau Anda bisa menambahkan mapping berdasarkan diagnosis
-          disease: item.diagnosis,
-          date: new Date(item.createdAt).toLocaleDateString('id-ID'),
-          percentage: parseFloat(item.confidence.replace('%', '')),
-          saran: item.saran,
-          createdAt: item.createdAt
-        }));
-
-        setHistoryData(transformedData);
-      } catch (err) {
-        console.error('Error fetching history:', err);
-        setError(err.message || 'Terjadi kesalahan saat mengambil riwayat diagnosis');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHistory();
+    loadHistory({ setLoading, setError, setHistoryData });
   }, []);
 
   if (loading) {
