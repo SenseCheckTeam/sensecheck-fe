@@ -4330,3 +4330,12 @@ body {
     padding: 0.75rem 1rem;
   }
 }
+
+
+@media (max-width: 440px) {
+    .profile-avatar-large {
+    width: 50px;
+    height: 50px;
+  }
+}
+

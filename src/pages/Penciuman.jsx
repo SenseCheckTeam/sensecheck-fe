@@ -22,7 +22,7 @@ function Penciuman() {
       <BackButton />
       <div className="sense-header">
         <div className="sense-icon-large">
-          <img src={penciuman.imageUrl} alt={penciuman.title} className="sense-icon-img" />
+          <img src={penciuman.logoUrl} alt={penciuman.title} className="sense-icon-img" />
         </div>
         <h1 className="sense-title">{penciuman.subtitle} <br />{penciuman.title}</h1>
       </div>

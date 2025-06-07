@@ -1,16 +1,22 @@
 import React from 'react';
 import '../App.css';
 import TeamMember from '../components/TeamMember';
+import raihanPhoto from '../assets/member/raihan.png';
+import shidqiPhoto from '../assets/member/shidqi.jpg';
+import ilhamPhoto from '../assets/member/ilham.jpg';
+import fajarPhoto from '../assets/member/fajar.jpg';
+import hanifPhoto from '../assets/member/hanif.jpg';
+import nabilPhoto from '../assets/member/nabil.jpeg';
 
 function About() {
   // Team members data
   const teamMembers = [
-    { id: 1, name: 'Muhammad Raihan', className: 'MC-20' },
-    { id: 2, name: 'Shidqi Ahmad Musyaffa', className: 'MC-25' },
-    { id: 3, name: 'Rizki Ilhamnuddin Muria', className: 'MC-30' },
-    { id: 4, name: 'Nur Fajar Apriyanto', className: 'FC-10' },
-    { id: 5, name: 'Muhammad Hanif Galuh Syahputera', className: 'FC-46' },
-    { id: 6, name: 'Nabil Al Faros', className: 'FC-35' },
+    { id: 1, name: 'Muhammad Raihan', className: 'MC-20', photo: raihanPhoto },
+    { id: 2, name: 'Shidqi Ahmad Musyaffa', className: 'MC-25', photo: shidqiPhoto },
+    { id: 3, name: 'Rizki Ilhamnuddin Muria', className: 'MC-30', photo: ilhamPhoto },
+    { id: 4, name: 'Nur Fajar Apriyanto', className: 'FC-10', photo: fajarPhoto },
+    { id: 5, name: 'Muhammad Hanif Galuh Syahputera', className: 'FC-46', photo: hanifPhoto },
+    { id: 6, name: 'Nabil Al Faros', className: 'FC-35', photo: nabilPhoto },
   ];
 
   return (
