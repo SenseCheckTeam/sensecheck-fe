@@ -2,6 +2,7 @@
 
 const API_URL = import.meta.env.VITE_API_URL;
 console.log('API URL:', API_URL);
+import { cacheSet, cacheGet } from '../../../indexedDB';
 
 // Helper function for making API requests
 async function fetchAPI(endpoint, options = {}) {
@@ -29,6 +30,8 @@ async function fetchAPI(endpoint, options = {}) {
     headers,
   };
 
+  const cacheKey = endpoint
+
   try {
     console.log(`Fetching ${url}...`);
     const response = await fetch(url, config);
@@ -38,9 +41,15 @@ async function fetchAPI(endpoint, options = {}) {
       throw new Error(data.message || 'Something went wrong');
     }
 
+    await cacheSet(cacheKey, data);
+
     return data;
   } catch (error) {
-    console.error('API Error:', error);
+    console.warn('🔁 Gagal fetch, mencoba ambil cache:', cacheKey);
+    const cached = await cacheGet(cacheKey);
+    if (cached) {
+      return cached.data;
+    }
     throw error;
   }
 }
@@ -268,24 +277,12 @@ export const diagnosisAPI = {
   },
 
   getHistoryData: async () => {
-    const API_URL = import.meta.env.VITE_API_URL;
-    const token = localStorage.getItem('token');
-  
-    if (!token) throw new Error('Token tidak ditemukan');
-  
-    const res = await fetch(`${API_URL}/diagnosa`, {
+    const res = await fetchAPI('/diagnosa', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      Auth: true,
     });
-  
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Gagal mengambil riwayat diagnosis');
-  
-    // Transformasi data agar hasilnya seperti sebelumnya
-    return data.data.map((item) => ({
+
+    return res.data.map((item) => ({
       id: item.id,
       senseType: 'Diagnosis',
       disease: item.diagnosis,
