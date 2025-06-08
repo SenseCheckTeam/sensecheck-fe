@@ -24,7 +24,7 @@ This is the **frontend** project for the Capstone application *SenseCheck*. Sens
    git clone https://github.com/SenseCheckTeam/sensecheck-fe.git
    cd sensecheck-femy-project
 
-2. **Clone the repository**
+2. **Install the dependencies**
    ```bash
    npm install
 
