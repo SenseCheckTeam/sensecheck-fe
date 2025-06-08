@@ -1,12 +1,36 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# SenseCheck Frontend
 
-Currently, two official plugins are available:
+This is the **frontend** project for the Capstone application *SenseCheck*. SenseCheck is an AI-powered early diagnosis application for sensory-related illnesses.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Features
+
+- Sensory diagnosis page
+- Diagnosis history tracking
+- Educational content about the five senses
+- Interactive sliders
+- User and admin login
+- Admin dashboard for content management
+- Responsive and mobile-friendly design
+
+
+
+## Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/SenseCheckTeam/sensecheck-fe.git
+   cd sensecheck-femy-project
+
+2. **Clone the repository**
+   ```bash
+   npm install
+
+3. **Create a .env file (if needed) and configure any required environment variables such as the backend API URL.**
+
+4. **Run the development server**
+   ```bash
+    npm run dev
+
